@@ -1,3 +1,19 @@
+# My NPM Project
+
+This project is a boilerplate for generating minified, ES3-compatible JavaScript. It uses Babel for transpilation and Terser for minification.
+
+## Setup
+
+1. Clone the repository or download the files.
+2. Install the dependencies:
+
+   ```bash
+   npm install
+
+
+
+
+
 This project is a boilerplate for generating minified, ES3-compatible JavaScript. It uses Babel for transpilation and Terser for minification.
 
 Setup
@@ -5,8 +21,7 @@ Clone the repository or download the files.
 
 Install the dependencies:
 
-bash
-Code kopieren
+ 
 npm install
 Building the Project
 To transpile and minify the JavaScript code, run:
@@ -21,6 +36,7 @@ Minify the output and save it in the dist folder.
 File Structure
 plaintext
 Code kopieren
+
 my-npm-project/
 ├── src/                 # Source files
 │   └── index.js         # Main JavaScript file
@@ -29,6 +45,7 @@ my-npm-project/
 ├── package.json         # Project configuration
 ├── babel.config.json    # Babel configuration for ES3 compatibility
 └── README.md            # Project instructions
+
 Usage
 Edit the main source file in src/index.js.
 Run npm run build to generate the production-ready code.
