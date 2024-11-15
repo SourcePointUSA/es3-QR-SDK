@@ -9,10 +9,7 @@ This project is a boilerplate for generating minified, ES3-compatible JavaScript
 
 ```bash
 npm install
-
-
-
-
+```
 
 This project is a boilerplate for generating minified, ES3-compatible JavaScript. It uses Babel for transpilation and Terser for minification.
 
@@ -45,8 +42,35 @@ my-npm-project/
 ├── package.json         # Project configuration
 ├── babel.config.json    # Babel configuration for ES3 compatibility
 └── README.md            # Project instructions
-
+```
 Usage
 Edit the main source file in src/index.js.
 Run npm run build to generate the production-ready code.
 The minified file will be located at dist/index.min.js.
+
+
+## API Reference
+
+#### Get all items
+
+```http
+  GET /api/items
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `api_key` | `string` | **Required**. Your API key |
+
+#### Get item
+
+```http
+  GET /api/items/${id}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | **Required**. Id of item to fetch |
+
+#### add(num1, num2)
+
+Takes two numbers and returns the sum.
