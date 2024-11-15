@@ -1,5 +1,5 @@
 (function() {
-	if (typeof _sp_ !== 'undefined') {
+	if (typeof window._sp_ !== 'undefined') {
   		console.error("_sp_ - object undefined");
 	}
 
@@ -35,11 +35,7 @@
 	var messageId = null;
 	var localState = null;
 
-	
 
-
-	addClickListener();
-    getMetaData();
  
     if (consentUUID == null) {
         consentUUID = generateUUID();
@@ -53,8 +49,7 @@
         console.log("authId: " + authId + " generated and stored")
     } 
 
-    getConsentStatus();
-    
+
     
     function extendSpObject() {
        
@@ -66,10 +61,14 @@
             _sp_.loadPrivacyManagerModal = function() {
                 console.log('Privacy Manager Modal loaded!');
             };
+
+            _sp_.acceptAll = function(){
+            	hideElement("pm");
+            	hideElement(messageDiv);
+            	acceptAll();
+            }
         
     }
-
-   	extendSpObject();
 
    	// Sicherstellen, dass das Events-Objekt existiert
 	window._sp_.config.events = window._sp_.config.events || {};
@@ -83,13 +82,15 @@
 	    }
 	};
 
-
     //OnConsentReady
-	var	onConsentReady = triggerEvent('onConsentReady', [
+	function onConsentReady(){
+		triggerEvent('onConsentReady', [
   		consentUUID,
   		euConsentString,
   		"placeholderforgrants"
 	]);
+
+	}
 
 
 
@@ -223,7 +224,7 @@ function checkMessageJson(response) {
             }
         }
     }
-    onConsentReady;
+    onConsentReady();
 	console.info("no message to be shown");
 	return false;
 
@@ -233,10 +234,6 @@ function checkMessageJson(response) {
 
 function getMessages() {
     console.log("getMessages()");
-
-    console.log(consentStatus);
-
-
 
     var baseURL = baseEndpoint + '/wrapper/v2/messages';
     var queryParams = '?hasCsp=true&env=prod';
@@ -289,6 +286,8 @@ function getMessages() {
 
     var res = JSON.parse(httpGet(fullURL));
 
+    console.log(res);
+
  
     localState = res.localState;
     setCookie("localState", JSON.stringify(res.localState), 365);
@@ -297,9 +296,10 @@ function getMessages() {
     //  metaData = res.metadata;
     //setCookie("metaData", JSON.stringify(res.metadata), 365);
 
-    console.log("getMessageResp" + res);
+    console.log(checkMessageJson(res));
 
     if (checkMessageJson(res)) {
+    	console.log("afterDiv");
         updateQrUrl("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=www.tcfv2.de/native/pm.php?authId="+authId+"&propertyId="+propertyId+"&propertyHref="+propertyHref);
     	//messageId = 
         showElement(messageDiv);
@@ -430,7 +430,7 @@ function sendGranularChoiceRequest(pmSaveAndExitVariables){
         if (req.readyState === 4 && req.status === 200) {
             var res = JSON.parse(req.responseText);
             console.log(req.responseText);
-            storeConsentResponse(res , pmSaveAndExitVariables);
+            storeConsentResponse(res,pmSaveAndExitVariables);
         }else{
             console.error('error:', req.responseText);
         }
@@ -544,7 +544,8 @@ function sendAcceptAllRequest(consentdata) {
     req.onreadystatechange = function() {
         if (req.readyState === 4 && req.status === 200) {
         	var res = JSON.parse(req.responseText);
-        		(consentdata);
+        		storeConsentResponse(consentdata.gdpr.consentStatus, res.uuid, res.consentDate)
+        		
         }else{
         	console.error('error:', req.responseText);
         }
@@ -554,22 +555,23 @@ function sendAcceptAllRequest(consentdata) {
     req.send(jsonData);
 }
 
-function storeConsentResponse(consentdata){
-    console.log("storeConsentResponse:");
-    console.log(consentdata);
+function storeConsentResponse(conStatus, uuid, cDate){
+    console.log("storeConsentResponse:", conStatus, uuid, cDate);
     
-    if(consentdata.consentStatus != undefined){
-        setCookie("consentStatus", JSON.stringify(consentdata.consentStatus),365);
-        consentStatus = consentdata.consentStatus;
-    }
+    
+    setCookie("consentStatus", JSON.stringify(conStatus),365);
+    consentStatus = conStatus;
+   
+
+    console.log(consentStatus);
+
+
   
-    consentUUID = consentdata.uuid;
-	setCookie("consentUUID", consentdata.uuid, 365);
-    consentDate = consentdata.dateCreated;
-	setCookie("consentDate", consentdata.dateCreated, 365);
-
-
-   	onConsentReady;
+    consentUUID = uuid;
+	setCookie("consentUUID", uuid, 365);
+    consentDate = cDate;
+	setCookie("consentDate", cDate, 365);
+   	onConsentReady();	
 
 }
 
@@ -599,9 +601,7 @@ function addClickListener() {
 
     for (i = 0; i < acceptButtons.length; i++) {
         acceptButtons[i].onclick = function() {
-            hideElement("pm");
-            hideElement(messageDiv);
-            acceptAll()
+          
         };
     }
 
@@ -697,6 +697,13 @@ function getConsentStatus(){
     setCookie("metaData", JSON.stringify(metaData),365);
 
  }
+
+
+extendSpObject();
+addClickListener();
+getMetaData();
+getConsentStatus();
+getMessages();
 
 })();
 

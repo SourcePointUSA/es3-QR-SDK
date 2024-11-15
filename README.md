@@ -46,13 +46,18 @@ Run npm run build to generate the production-ready code.
 The minified file will be located at dist/index.min.js.
 
 
-## API Reference
+## BUTTON ACTIONS	
 
-#### Example Request
+#### ACCEPT ALL
 
-```http
-  GET /api/example
+```code
+  _sp_.accept_all()
 ```
+
+```code
+    <button onclick="_sp_.acceptAll();">Zustimmen</button>
+```
+
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
