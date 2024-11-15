@@ -15,7 +15,7 @@
 
 	var mmsDomain = _sp_.config.baseEndpoint;
 	var baseEndpoint = _sp_.config.baseEndpoint;
-	var propertyHref =  _sp_.config.propertyHref;
+	var propertyHref = _sp_.config.propertyHref;
 	var propertyId = _sp_.config.propertyId;
 	var accountId = _sp_.config.accountId;
 	var hasLocalData = false;
@@ -31,6 +31,8 @@
 	var	consentAllRef = null;
 	var	gdprApplies = null;
 	var messageDiv = _sp_.config.messageDiv;
+	var pmDiv = _sp_.config.pmDiv;
+
 
 	var messageId = null;
 	var localState = null;
@@ -54,19 +56,36 @@
     function extendSpObject() {
        
             _sp_.executeMessaging = function() {
+            	hideElement(pmDiv);
+           		hideElement(messageDiv);
             	getMessages();
                 console.log('Messaging executed!');
             };
 
             _sp_.loadPrivacyManagerModal = function() {
+            	showElement(pmDiv);
+           		hideElement(messageDiv);
                 console.log('Privacy Manager Modal loaded!');
             };
 
             _sp_.acceptAll = function(){
-            	hideElement("pm");
+            	hideElement(pmDiv);
             	hideElement(messageDiv);
             	acceptAll();
             }
+
+            _sp_.continue = function(){
+            	hideElement(pmDiv);
+            	hideElement(messageDiv);
+            	liOnly();
+            }
+
+            _sp_.reject = function(){
+            	hideElement(pmDiv);
+            	hideElement(messageDiv);
+            	rejectAll();
+            }
+
         
     }
 
@@ -299,18 +318,15 @@ function getMessages() {
     console.log(checkMessageJson(res));
 
     if (checkMessageJson(res)) {
-    	console.log("afterDiv");
-        updateQrUrl("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=www.tcfv2.de/native/pm.php?authId="+authId+"&propertyId="+propertyId+"&propertyHref="+propertyHref);
-    	//messageId = 
+        updateQrUrl(_sp_.config.qrUrl + _sp_.config.pmUrl +"?authId="+authId+"&propertyId="+propertyId+"&propertyHref="+propertyHref+"&accountId="+accountId);
         showElement(messageDiv);
-
     }
 
 }
 
 function updateQrUrl( newUrl) {
 
-    var image = document.getElementById("qr");
+    var image = document.getElementById(_sp_.config.qrUrl);
 
     if (image) {
         // Manipuliere die URL des Bildes, z.B. durch Hinzufügen eines Zeitstempels, um das Neuladen zu erzwingen
@@ -357,12 +373,11 @@ function liOnly(){
 
     /*get LI only Purposes and vendors*/
     var liURL = baseEndpoint + '/consent/tcfv2/consent/v3/' + propertyId + '/li-only';
-    var liOnly = JSON.parse(httpGet(liURL));
-    sendGranularChoiceRequest(liOnly);
+    sendGranularChoiceRequest(JSON.parse(httpGet(liURL)));
 }
 
 function rejectAll(){
-      var baseUrl = _sp_.config.baseEndpoint + '/wrapper/v2/choice/reject-all';
+    var baseUrl = baseEndpoint + '/wrapper/v2/choice/reject-all';
     var queryParams = {
         hasCsp: 'true',
         authId: authId,
@@ -397,7 +412,7 @@ function sendGranularChoiceRequest(pmSaveAndExitVariables){
     var req = new XMLHttpRequest();
 
     console.log(pmSaveAndExitVariables)
-    var url = 'https://cmp.tcfv2.de/wrapper/v2/choice/gdpr/1?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
+    var url = baseEndpoint + '/wrapper/v2/choice/gdpr/1?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
     req.open('POST', url, false); 
 
     req.setRequestHeader('accept', '*/*');
@@ -422,23 +437,19 @@ function sendGranularChoiceRequest(pmSaveAndExitVariables){
         pmSaveAndExitVariables : pmSaveAndExitVariables
     };
 
-    // Wandle die Daten in einen JSON-String um
-    var jsonData = JSON.stringify(data);
-
-    // Callback für den Fall, dass die Anfrage abgeschlossen ist
     req.onreadystatechange = function() {
         if (req.readyState === 4 && req.status === 200) {
             var res = JSON.parse(req.responseText);
-            console.log(req.responseText);
-            storeConsentResponse(res,pmSaveAndExitVariables);
+            console.log("------------");
+            console.log(res);
+              console.log("------------");
+            storeConsentResponse(res.consentStatus, res.uuid, res.dateCreated, res.euconsent);
         }else{
             console.error('error:', req.responseText);
         }
     };
 
-    // Sende die Anfrage mit den JSON-Daten
-    req.send(jsonData);
-
+    req.send(JSON.stringify(data));
 }
 
 
@@ -449,7 +460,7 @@ function sendRejectAllChoiceRequest(consentdata){
     consentAllRef =  consentdata.gdpr.consentAllRef;
     gdprApplies = consentdata.gdpr.gdprApplies;
  
-    var url = 'https://cmp.tcfv2.de/wrapper/v2/choice/gdpr/13?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
+    var url = baseEndpoint + '/wrapper/v2/choice/gdpr/13?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
 
     var req = new XMLHttpRequest();
     req.open('POST', url, false); // Asynchrone POST-Anfrage
@@ -486,8 +497,7 @@ function sendRejectAllChoiceRequest(consentdata){
     req.onreadystatechange = function() {
         if (req.readyState === 4 && req.status === 200) {
             var res = JSON.parse(req.responseText);
-            console.log(req.responseText);
-            storeConsentResponse(res , consentdata);
+            storeConsentResponse(res.consentStatus , res.uuid, res.dateCreated, res.euconsent);
         }else{
             console.error('error:', req.responseText);
         }
@@ -544,8 +554,7 @@ function sendAcceptAllRequest(consentdata) {
     req.onreadystatechange = function() {
         if (req.readyState === 4 && req.status === 200) {
         	var res = JSON.parse(req.responseText);
-        		storeConsentResponse(consentdata.gdpr.consentStatus, res.uuid, res.consentDate)
-        		
+        	storeConsentResponse(consentdata.gdpr.consentStatus, res.uuid, res.consentDate, res.euconsent)	
         }else{
         	console.error('error:', req.responseText);
         }
@@ -555,18 +564,13 @@ function sendAcceptAllRequest(consentdata) {
     req.send(jsonData);
 }
 
-function storeConsentResponse(conStatus, uuid, cDate){
-    console.log("storeConsentResponse:", conStatus, uuid, cDate);
+function storeConsentResponse(conStatus, uuid, cDate, euconsent){
+    console.log("storeConsentResponse:", conStatus, uuid, cDate, euconsent);
     
-    
-    setCookie("consentStatus", JSON.stringify(conStatus),365);
     consentStatus = conStatus;
-   
-
-    console.log(consentStatus);
-
-
-  
+    setCookie("consentStatus", JSON.stringify(conStatus),365);
+   	euConsentString =euconsent;
+    setCookie("euconsent-v2", euconsent);
     consentUUID = uuid;
 	setCookie("consentUUID", uuid, 365);
     consentDate = cDate;
@@ -588,23 +592,9 @@ function addClickListenersToClass(cn) {
 
 
 function addClickListener() {
-    var optionsButton = document.getElementById('options');
-    if (optionsButton) {
-        optionsButton.onclick = function() {
-           showElement("pm")
-           hideElement(messageDiv)
-        };
-    }
+ 
 
-    var acceptButtons = document.getElementsByClassName('sp_accept'); 
-    var i;
-
-    for (i = 0; i < acceptButtons.length; i++) {
-        acceptButtons[i].onclick = function() {
-          
-        };
-    }
-
+   
     var reloadButtons = document.getElementsByClassName('sp_reload');
 
     for (i = 0; i < reloadButtons.length; i++) {
@@ -617,27 +607,6 @@ function addClickListener() {
         };
     }
 
-    var continueButtons = document.getElementsByClassName('sp_continue'); 
-    var i;
-
-    for (i = 0; i < continueButtons.length; i++) {
-        continueButtons[i].onclick = function() {
-            hideElement("pm");
-            hideElement(messageDiv);
-            liOnly()
-        };
-    }
-
-    var rejectButtons = document.getElementsByClassName('sp_reject'); 
-    var i;
-
-    for (i = 0; i < rejectButtons.length; i++) {
-        rejectButtons[i].onclick = function() {
-            hideElement("pm");
-            hideElement(messageDiv);
-            rejectAll();
-        };    
-    }
 }
 
 function getConsentStatus(){

@@ -1,4 +1,4 @@
-# ES3 Compatible SDK (QR)
+# ES3 Compatible SDK (QR) GDPR ONLY
 
 This project is a boilerplate for generating minified, ES3-compatible JavaScript. It uses Babel for transpilation and Terser for minification.
 
@@ -45,21 +45,44 @@ Edit the main source file in src/index.js.
 Run npm run build to generate the production-ready code.
 The minified file will be located at dist/index.min.js.
 
+## Missing Pieces
+
+1. Reconsent is in progress but not working atm
+2. Reporting is not available at this point
+3. Script assumes that GDPR always applies (need to make this dynamic using the vendor list scope)
+4. Message needs to be completly hardcoded at this point -> UI component exists and returns values in the APIs
+
 
 ## BUTTON ACTIONS	
 
-#### ACCEPT ALL
+### Accept All
 
 ```code
   _sp_.accept_all()
 ```
 
+### Continue Without Accepting
+
 ```code
-    <button onclick="_sp_.acceptAll();">Zustimmen</button>
+  _sp_.continue()
 ```
 
+### Reject All
 
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `api_key` | `string` | **Required**. Your API key |
+```code
+  _sp_.reject()
+```
+
+### Open Second Layer
+
+```code
+  _sp_.loadPrivacyManagerModal()
+```
+
+### Reload CMP
+
+```code
+  _sp_.executeMessaging()
+```
+
 
