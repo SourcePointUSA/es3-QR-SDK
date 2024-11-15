@@ -7,8 +7,8 @@ This project is a boilerplate for generating minified, ES3-compatible JavaScript
 1. Clone the repository or download the files.
 2. Install the dependencies:
 
-   ```bash
-   npm install
+```bash
+npm install
 
 
 
@@ -36,7 +36,7 @@ Minify the output and save it in the dist folder.
 File Structure
 plaintext
 Code kopieren
-
+```bash
 my-npm-project/
 ├── src/                 # Source files
 │   └── index.js         # Main JavaScript file
