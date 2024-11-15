@@ -53,7 +53,7 @@ The minified file will be located at dist/index.min.js.
 4. Message needs to be completly hardcoded at this point -> UI component exists and returns values in the APIs
 
 
-## BUTTON ACTIONS	
+## Button Actions
 
 ### Accept All
 
