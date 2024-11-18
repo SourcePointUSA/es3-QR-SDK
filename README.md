@@ -2,7 +2,11 @@
 
 This project is a boilerplate for generating minified, ES3-compatible JavaScript. It uses Babel for transpilation and Terser for minification.
 
-## Setup
+# Table of Contents
+
+- [How to Install](#how-to-install)
+
+# How to Install
 1. Clone the repository or download the files.
 2. Install the dependencies:
 
