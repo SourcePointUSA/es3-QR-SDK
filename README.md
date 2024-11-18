@@ -56,7 +56,7 @@ The minified file will be located at dist/index.min.js.
 | Parameter         | Type       | Description                                                                                              |
 |-------------------|------------|----------------------------------------------------------------------------------------------------------|
 | `accountId`       | `integer`  | **Required**. The unique identifier for your account on Sourcepoint.                                      |
-| `propertyId`      | `integer`  | **Required**. The identifier of the property you want to integrate.                                       |
+| `propertyId`      | `integer`  | **Required**. Maps the implementation to a specific URL as set up in the Sourcepoint dashboard. Use this parameter to spoof messaging campaigns for testing or debugging.                                       |
 | `propertyHref`    | `string`   | **Required**. The name or URL of the property to be connected.                                            |
 | `baseEndpoint`    | `string`   | **Required**. The API endpoint. Use the default (`https://cdn.privacy-mgmt.com/`) unless a custom CNAME is required. |
 | `messageDiv`      | `string`   | **Required**. The ID of the `<div>` element where your consent message will appear.                       |
@@ -66,64 +66,21 @@ The minified file will be located at dist/index.min.js.
 | `pmUrl`           | `string`   | **Required**. The URL for the privacy manager's second-layer page (no default; must be hosted on your infrastructure). |
 | `gdpr`            | `object`   | **Optional**. Adds GDPR TCF or GDPR Standard messaging campaigns to your configuration.                  |
 | `isSPA`           | `boolean`  | **Optional**. Set to `true` to implement for a single-page application. Shows messages only when `window._sp_.executeMessaging();` is triggered. |
-| `propertyHref`    | `string`   | **Optional**. Maps the implementation to a specific URL as set up in the Sourcepoint dashboard. Use this parameter to spoof messaging campaigns for testing or debugging. |
-| `targetingParams` | `object`   | **Optional**. Allows setting arbitrary key/value pairs sent to Sourcepoint servers for decision-making in the scenario builder. Parameters set within U.S. Privacy (Legacy) or GDPR objects override this configuration. Example:  |
-|                   |            | ```json                                                                                                  |
-|                   |            | targetingParams: {                                                                                       |
-|                   |            |    "key1": "valueA",                                                                                     |
-|                   |            |    "key2": "valueB"                                                                                      |
-|                   |            | }    
+| `targetingParams` | `object`   | **Optional**. Allows setting arbitrary key/value pairs sent to Sourcepoint servers for decision-making in the scenario builder. Parameters set within U.S. Privacy (Legacy) or GDPR objects override this configuration.  |
 
- 
- 
 
 
 ## Button Actions
 The button actions in this project allow users to interact with the application through predefined functionalities. Each button triggers a specific behavior, enabling seamless integration and user-friendly workflows. Below is a detailed overview of the available actions and their corresponding outcomes.
 
+| Action                  | Description                                                                                  | Code Example                          |
+|-------------------------|----------------------------------------------------------------------------------------------|---------------------------------------|
+| **Accept All**          | Accept all consent options.                                                                  | ```javascript\n_sp_.accept_all()\n``` |
+| **Continue Without Accepting** | Proceed without explicit consent while maintaining legitimate interest settings if configured. | ```javascript\n_sp_.continue()\n```   |
+| **Reject All**          | Reject all consent options.                                                                  | ```javascript\n_sp_.reject()\n```     |
+| **Open Second Layer**   | Open the privacy manager modal for more detailed consent settings.                           | ```javascript\n_sp_.loadPrivacyManagerModal()\n``` |
+| **Reload CMP**          | Reload the Consent Management Platform interface.                                            | ```javascript\n_sp_.executeMessaging()\n``` |
 
-#### Accept All
-
- Accept all consent options.
-
-```javascript
-  _sp_.accept_all()
-```
-
-#### Continue Without Accepting
-
-Proceed without explicit consent while maintaining legitimate interest settings if configured.
-
-```javascript
-  _sp_.continue()
-```
-
-#### Reject All
-
-Reject all consent options.
-
-```javascript
-  _sp_.reject()
-```
-
-#### Open Second Layer
-Open the privacy manager modal for more detailed consent settings.
-
-javascript
-Code kopieren
-
-
-```javascript
-  _sp_.loadPrivacyManagerModal()
-```
-
-#### Reload CMP
-
- Reload the Consent Management Platform interface.
-
-```javascript
-  _sp_.executeMessaging()
-```
 
 
 # Missing Pieces
