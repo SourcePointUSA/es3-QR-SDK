@@ -68,6 +68,41 @@ The minified file will be located at dist/index.min.js.
 | `isSPA`           | `boolean`  | **Optional**. Set to `true` to implement for a single-page application. Shows messages only when `window._sp_.executeMessaging();` is triggered. |
 | `targetingParams` | `object`   | **Optional**. Allows setting arbitrary key/value pairs sent to Sourcepoint servers for decision-making in the scenario builder. Parameters set within U.S. Privacy (Legacy) or GDPR objects override this configuration.  |
 
+### Optional Event Callbacks
+
+Currently, we have a single event being triggered. Once consent is ready, Sourcepoint offers an optional callback function onConsentReady that allows your organization to read vendor grants. This command can be called with JavaScript code embedded in a webpage: providing the consentUUID, the IAB TCString, and a vendorGrants object.
+
+
+```javascript
+
+ events: {
+ 	onConsentReady: function( consentUUID, euconsent, vendorGrants) {
+    	console.log('Custom - onConsentReady');
+        console.log('consentUUID: ' + consentUUID);
+        console.log('euconsent: ' + euconsent);
+        console.log(vendorGrants);
+    }
+}
+```
+
+ The grants section in the JSON response using the TCF API getCustomVendorConsents request lists the consented purposes for each vendor. The variable vendorGrant provides the vendor grant status.
+
+The consented purposes are listed as follows:
+
+| Parameter         | Description                                                                                              |
+|-------------------|----------------------------------------------------------------------------------------------------------|
+|  `vendor_id` | A unique identifier for each vendor persisiting across all Sourcepoint vendor lists |
+|  `purpose_id	` | A unique identifier for each purpose (mind that this ID is changing depending on the Vendor List) |
+|  `status	` | Status is  `true` if the purpose applies to an end-user. |
+|  `vendorGrant	` | Status is `true` if all purposes for a vendor apply to an end-user. Status is `false` if one or more purposes for a vendor denies consent for one or more purposes. |
+
+
+ 
+
+## Vendor grants
+
+A vendor grant is a boolean value that is true if an end-user has consented to all purposes assigned to a vendor. The vendor grant value is false if one or more purposes have been disallowed by the end-user. Where the vendor grant has been set to false, your organization should check which purposes have been rejected by the end-user. 
+
 
 
 ## Button Actions
