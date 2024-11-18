@@ -1,11 +1,9 @@
 (function() {
-	if (typeof window._sp_ !== 'undefined') {
-  		console.error("_sp_ - object undefined");
-	}
+
 
 	var nonKeyedLocalState = null;
 	var env = "prod";
-	var scriptVersion = "0.0.1";
+	var scriptVersion = "0.0.2";
 	var scriptType = "es3";
 	var consentUUID = getCookieValue("consentUUID");
 	var authId = getCookieValue("authId");
@@ -90,6 +88,12 @@
 	}
 
     function extendSpObject() {	
+
+    	console.log(typeof _sp_);
+    	if (typeof _sp_ == 'undefined') {
+  			console.error("_sp_ - object undefined");
+		}
+
         _sp_.executeMessaging = function() {
         	hideElement(pmDiv);
        		hideElement(messageDiv);
@@ -527,8 +531,8 @@
 	}
 
 	function getConsentStatus(){
-	    console.log("getConsentStatus() executed")
-	    var baseUrl = 'https://cmp.tcfv2.de/wrapper/v2/consent-status';
+	    console.log("getConsentStatus() executed");
+	    var baseUrl = baseEndpoint +'/wrapper/v2/consent-status';
 	    var params = {
 	      hasCsp: 'true',
 	      accountId: accountId,

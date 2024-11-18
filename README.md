@@ -60,8 +60,8 @@ The minified file will be located at dist/index.min.js.
         window._sp_ = {
             config: {
                 accountId: 22,
-                propertyId: 37479,
-                propertyHref: "https://hbb.tv",
+                propertyId: 37811,
+                propertyHref: "https://ott.es3",
                 baseEndpoint: 'https://cdn.privacy-mgmt.com',
                 messageDiv: "native_message",
                 pmDiv: "pm", 
@@ -151,6 +151,7 @@ The button actions in this project allow users to interact with the application 
 # Outstanding Issues
 
 1. Reconsent is in progress but currently not functioning.
-2. Reporting functionality is not yet available.
-3. The script assumes GDPR is always applicable—this needs to be dynamic based on the vendor list scope.
-4. The message is fully hardcoded for now—the UI component exists and returns values via the APIs, but it's not yet integrated into the HTML.
+2. Post and Revoke Custom consent is in prograss
+3. Reporting functionality is not yet available.
+4. The script assumes GDPR is always applicable—this needs to be dynamic based on the vendor list scope.
+5. The message is fully hardcoded for now—the UI component exists and returns values via the APIs, but it's not yet integrated into the HTML.
