@@ -75,11 +75,11 @@ The button actions in this project allow users to interact with the application 
 
 | Action                  | Description                                                                                  | Code Example                          |
 |-------------------------|----------------------------------------------------------------------------------------------|---------------------------------------|
-| **Accept All**          | Accept all consent options.                                                                  | ```javascript _sp_.accept_all() ``` |
-| **Continue Without Accepting** | Proceed without explicit consent while maintaining legitimate interest settings if configured. | ```javascript\n_sp_.continue()\n```   |
-| **Reject All**          | Reject all consent options.                                                                  | ```javascript\n_sp_.reject()\n```     |
-| **Open Second Layer**   | Open the privacy manager modal for more detailed consent settings.                           | ```javascript\n_sp_.loadPrivacyManagerModal()\n``` |
-| **Reload CMP**          | Reload the Consent Management Platform interface.                                            | ```javascript\n_sp_.executeMessaging()\n``` |
+| **Accept All**          | Accept all consent options.                                                                  | ``` _sp_.accept_all() ``` |
+| **Continue Without Accepting** | Proceed without explicit consent while maintaining legitimate interest settings if configured. | ```_sp_.continue() ```   |
+| **Reject All**          | Reject all consent options.                                                                  | ```_sp_.reject()\n```     |
+| **Open Second Layer**   | Open the privacy manager modal for more detailed consent settings.                           | ```_sp_.loadPrivacyManagerModal() ``` |
+| **Reload CMP**          | Reload the Consent Management Platform interface.                                            | ```_sp_.executeMessaging()``` |
 
 
 
