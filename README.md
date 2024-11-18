@@ -77,7 +77,7 @@ The button actions in this project allow users to interact with the application 
 |-------------------------|----------------------------------------------------------------------------------------------|---------------------------------------|
 | **Accept All**          | Accept all consent options.                                                                  | ``` _sp_.accept_all() ``` |
 | **Continue Without Accepting** | Proceed without explicit consent while maintaining legitimate interest settings if configured. | ```_sp_.continue() ```   |
-| **Reject All**          | Reject all consent options.                                                                  | ```_sp_.reject()\n```     |
+| **Reject All**          | Reject all consent options.                                                                  | ``` _sp_.reject() ```     |
 | **Open Second Layer**   | Open the privacy manager modal for more detailed consent settings.                           | ```_sp_.loadPrivacyManagerModal() ``` |
 | **Reload CMP**          | Reload the Consent Management Platform interface.                                            | ```_sp_.executeMessaging()``` |
 
