@@ -75,7 +75,7 @@ The button actions in this project allow users to interact with the application 
 
 | Action                  | Description                                                                                  | Code Example                          |
 |-------------------------|----------------------------------------------------------------------------------------------|---------------------------------------|
-| **Accept All**          | Accept all consent options.                                                                  | ```javascript\n_sp_.accept_all()\n``` |
+| **Accept All**          | Accept all consent options.                                                                  | ```javascript _sp_.accept_all() ``` |
 | **Continue Without Accepting** | Proceed without explicit consent while maintaining legitimate interest settings if configured. | ```javascript\n_sp_.continue()\n```   |
 | **Reject All**          | Reject all consent options.                                                                  | ```javascript\n_sp_.reject()\n```     |
 | **Open Second Layer**   | Open the privacy manager modal for more detailed consent settings.                           | ```javascript\n_sp_.loadPrivacyManagerModal()\n``` |
