@@ -1,5 +1,9 @@
 (function() {
+	var console = window.console || { log: function() {return true}, error: function() {document.write(v)} };
 
+	if (typeof _sp_ === 'undefined') {
+		console.error("_sp_ - object undefined");
+	}
 
 	var nonKeyedLocalState = null;
 	var env = "prod";
@@ -32,11 +36,8 @@
 	var messageDiv = _sp_.config.messageDiv;
 	var pmDiv = _sp_.config.pmDiv;
 
-
 	var messageId = null;
 	var localState = null;
-
-
  
     if (consentUUID == null) {
         consentUUID = generateUUID();
@@ -88,11 +89,6 @@
 	}
 
     function extendSpObject() {	
-
-    	console.log(typeof _sp_);
-    	if (typeof _sp_ == 'undefined') {
-  			console.error("_sp_ - object undefined");
-		}
 
         _sp_.executeMessaging = function() {
         	hideElement(pmDiv);
@@ -555,8 +551,7 @@
 	 }
 
 	function getMetaData(){
-			var baseUrl = 'https://cmp.tcfv2.de/wrapper/v2/meta-data';
-
+			var baseUrl = baseEndpoint + '/wrapper/v2/meta-data';
 		    var params = {
 		      hasCsp: 'true',
 		      accountId: accountId,
@@ -570,10 +565,8 @@
 		    };
 
 		    var res = JSON.parse(httpGet(buildUrl(baseUrl, params)));
-
 		    metaData = res;
 		    setCookie("metaData", JSON.stringify(metaData),365);
-
 	}
 
 	extendSpObject();

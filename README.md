@@ -107,18 +107,21 @@ Currently, we have a single event being triggered. Once consent is ready, Source
 
 
 ```javascript
-
- events: {
- 	onConsentReady: function( consentUUID, euconsent, vendorGrants) {
-    	console.log('Custom - onConsentReady');
-        console.log('consentUUID: ' + consentUUID);
-        console.log('euconsent: ' + euconsent);
-        console.log(vendorGrants);
-    }
+_sp_ = {
+    config: {
+    	...
+    	events: {
+			onConsentReady: function( consentUUID, euconsent, vendorGrants) {
+			   console.log('Custom - onConsentReady');
+			   console.log('consentUUID: ' + consentUUID);
+			   console.log('euconsent: ' + euconsent);
+			   console.log(vendorGrants);
+			}
+		}
+	}
 }
 ```
 
- 
 ## Vendor grants
 
 A vendor grant is a boolean value that is true if an end-user has consented to all purposes assigned to a vendor. The vendor grant value is false if one or more purposes have been disallowed by the end-user. Where the vendor grant has been set to false, your organization should check which purposes have been rejected by the end-user. 
@@ -146,12 +149,10 @@ The button actions in this project allow users to interact with the application 
 | **Open Second Layer**   | Open the privacy manager modal for more detailed consent settings.                           | ```_sp_.loadPrivacyManagerModal() ``` |
 | **Reload CMP**          | Reload the Consent Management Platform interface.                                            | ```_sp_.executeMessaging()``` |
 
-
-
 # Outstanding Issues
 
 1. Reconsent is in progress but currently not functioning.
-2. Post and Revoke Custom consent is in prograss
+2. Post and Revoke Custom consent is in progress
 3. Reporting functionality is not yet available.
 4. The script assumes GDPR is always applicable—this needs to be dynamic based on the vendor list scope.
 5. The message is fully hardcoded for now—the UI component exists and returns values via the APIs, but it's not yet integrated into the HTML.

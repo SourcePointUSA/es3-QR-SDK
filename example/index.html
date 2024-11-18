@@ -194,23 +194,29 @@ position: relative;
    
 
     <div class="message" id="native_message">
-        <h1>Datenschutz</h1>
+        <h1>Privacy Message</h1>
         <p>
-            Mit Ihrer Einwilligung erheben und verarbeiten wir und unsere Partner Nutzungsdaten, um dieses SmartTV-Angebot zu personalisieren und Ihnen personalisierte Werbung anzuzeigen. Hierfür können Cookies oder andere Informationen auf Ihrem Gerät gespeichert und abgerufen werden. Nutzungsprofile basierend auf Ihrer Nutzung unseres Angebots erstellt und die Werbeleistung gemessen werden. Auch können aus anderen Quellen stammende Informationen mit diesen Daten kombiniert werden. 
+           We and our partners use device identifiers or similar technologies on the app and to collect and use personal data (e.g., your IP address). If you consent, the device identifiers or or the information can be stored locally or accessed on your device for the purpose described below. You can click “Accept All” or “manage Preferences” to customize your consent. For some of the purposes below, our partners use precise geolocation data, and they also rely on legitimate interests to process personal data. View our partners to see the purposes they believe for you can change have legitimate interest & you can change your settings at any time.
         </p>
-        <p>
-            Informationen über ihre Nutzung unseres Angebots können mit Ihrer Einwilligung zudem zur Verbesserung und Entwicklung von Produkten und Dienstleistungen genutzt werden. Ihre Einwilligung erteilen Sie mit der Schaltfläche "Zustimmen". Über die Schaltfläche "Einstellungen oder Ablehnen" erhalten Sie weitere Informationen und können Ihre Einwilligung für ausgewählte Zwecke erteilen. Weitere Informationen zu uns und unseren Partnern sowie zu den Möglichkeiten, Ihre Einwilligung zu widerrufen, finden Sie in den Datenschutzbestimmungen (blaue Taste).
-        </p>
+
+            <ul>
+                <li>Store and/or access information on a device</li>
+                <li>Select basic ads</li>
+                <li>Create a personalised ads profile</li>
+                <li>Select personalised ads</li>
+                <li>Create a personalised content profile</li>
+                ...
+            </ul>
+
         <div class="buttons">
-            <button onclick="_sp_.acceptAll();">Zustimmen</button>
-            <button onclick="_sp_.continue();">Weiter ohne Zustimmung</button>
-            <button onclick="_sp_.loadPrivacyManagerModal();">Einstellungen oder Ablehnen</button>
+            <button onclick="_sp_.acceptAll();">Accept</button>
+            <button onclick="_sp_.continue();">Continue without Agreeing</button>
+            <button onclick="_sp_.loadPrivacyManagerModal();">Configure or Reject</button>
         </div>
     </div> 
 
        <!-- Zweites Div für Datenschutz-Einstellungen -->
     <div class="datenschutz-einstellungen" id="pm">
-    <button id="reload_pm">Zurück</button> 
         <h2>Ihre Datenschutzeinstellungen</h2>
         <p><strong>Informationen speichern und abrufen</strong><br>
             Cookies, Endgeräte- oder ähnliche Online-Kennungen (z. B. login-basierte Kennungen, zufällig generierte Kennungen, netzwerkbasierte Kennungen) können zusammen mit anderen Informationen auf Ihrem Endgerät gespeichert oder von dort ausgelesen werden, um es jedes Mal wiederzuerkennen, wenn es eine App oder eine Webseite aufruft.
