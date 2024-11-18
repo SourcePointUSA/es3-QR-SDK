@@ -53,7 +53,7 @@ Edit the main source file in src/index.js.
 Run npm run build to generate the production-ready code.
 The minified file will be located at dist/index.min.js.
 
-##Example
+## Example
 
 ```javascript
     <script type="text/javascript">
