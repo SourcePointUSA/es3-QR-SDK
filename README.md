@@ -6,7 +6,8 @@ This project is a boilerplate for generating minified, ES3-compatible JavaScript
 
 - [How to Install](#how-to-install)
 - [Usage](#usage)
-- [Missing Pieces](#missing-pieces)
+- [Outstanding issues](#putstanding-issues)
+
 
 # How to Install
 1. Clone the repository or download the files.
@@ -36,7 +37,7 @@ Minify the output and save it in the dist folder.
 File Structure
 
 ```bash
-my-npm-project/
+es3-QR-SDK/
 ├── src/                 # Source files
 │   └── index.js         # Main JavaScript file
 ├── dist/                # Build output
@@ -47,9 +48,41 @@ my-npm-project/
 ```
 
 # Usage
+
 Edit the main source file in src/index.js.
 Run npm run build to generate the production-ready code.
 The minified file will be located at dist/index.min.js.
+
+##Example
+
+```javascript
+    <script type="text/javascript">
+        window._sp_ = {
+            config: {
+                accountId: 22,
+                propertyId: 37479,
+                propertyHref: "https://hbb.tv",
+                baseEndpoint: 'https://cdn.privacy-mgmt.com',
+                messageDiv: "native_message",
+                pmDiv: "pm", 
+                qrId: "qr",
+                qrUrl: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=",
+                pmUrl: "https://tcfv2.de/pm.php",
+                events: {
+                    onConsentReady: function( consentUUID, euconsent, vendorGrants) {
+                        console.log('Custom - onConsentReady');
+                        console.log('consentUUID: ' + consentUUID);
+                        console.log('euconsent: ' + euconsent);
+                        console.log(vendorGrants);
+                    }
+                }
+            }
+        }
+    </script>
+
+```
+
+A complete example has been included in the "example" folder within this repository.
 
 ## Script Configuration Parameters
 
@@ -85,7 +118,12 @@ Currently, we have a single event being triggered. Once consent is ready, Source
 }
 ```
 
- The grants section in the JSON response using the TCF API getCustomVendorConsents request lists the consented purposes for each vendor. The variable vendorGrant provides the vendor grant status.
+ 
+## Vendor grants
+
+A vendor grant is a boolean value that is true if an end-user has consented to all purposes assigned to a vendor. The vendor grant value is false if one or more purposes have been disallowed by the end-user. Where the vendor grant has been set to false, your organization should check which purposes have been rejected by the end-user. 
+
+The grants section in the JSON response using the TCF API getCustomVendorConsents request lists the consented purposes for each vendor. The variable vendorGrant provides the vendor grant status.
 
 The consented purposes are listed as follows:
 
@@ -96,16 +134,8 @@ The consented purposes are listed as follows:
 |  `status	` | Status is  `true` if the purpose applies to an end-user. |
 |  `vendorGrant	` | Status is `true` if all purposes for a vendor apply to an end-user. Status is `false` if one or more purposes for a vendor denies consent for one or more purposes. |
 
-
- 
-
-## Vendor grants
-
-A vendor grant is a boolean value that is true if an end-user has consented to all purposes assigned to a vendor. The vendor grant value is false if one or more purposes have been disallowed by the end-user. Where the vendor grant has been set to false, your organization should check which purposes have been rejected by the end-user. 
-
-
-
 ## Button Actions
+
 The button actions in this project allow users to interact with the application through predefined functionalities. Each button triggers a specific behavior, enabling seamless integration and user-friendly workflows. Below is a detailed overview of the available actions and their corresponding outcomes.
 
 | Action                  | Description                                                                                  | Code Example                          |
@@ -118,9 +148,9 @@ The button actions in this project allow users to interact with the application 
 
 
 
-# Missing Pieces
+# Outstanding Issues
 
-1. Reconsent is in progress but not working atm
-2. Reporting is not available at this point
-3. Script assumes that GDPR always applies (need to make this dynamic using the vendor list scope)
-4. Message needs to be completly hardcoded at this point -> UI component exists and returns values in the APIs
+1. Reconsent is in progress but currently not functioning.
+2. Reporting functionality is not yet available.
+3. The script assumes GDPR is always applicable—this needs to be dynamic based on the vendor list scope.
+4. The message is fully hardcoded for now—the UI component exists and returns values via the APIs, but it's not yet integrated into the HTML.

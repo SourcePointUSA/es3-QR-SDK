@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="author" content="">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+
+         body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: #2e3b4e;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+    #native_message {
+        display: none;
+    
+    }
+
+     #pm {
+        display: none;
+    }
+
+       
+        .message {
+            width: 50%;
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: #2e3b4e;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 50%;
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        a {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .buttons button {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .buttons button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+ 
+
+        /* Neues div für das zweite Layout */
+        .datenschutz-einstellungen {
+            width: 50%;
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .datenschutz-einstellungen h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .datenschutz-einstellungen p {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .datenschutz-einstellungen .option-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .option-buttons button {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .option-buttons button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+ 
+        .qr-code {
+position: relative;
+    left: 75%;
+    width: 20%;
+        top: -40px;
+
+
+        }
+        
+        .qr-code img {  
+            display:block;
+            border: 25px solid white
+        }     
+
+        .qr-code p {
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* Zustimmung/Ablehnung Buttons */
+        .final-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px; 
+        }
+
+        .final-buttons button {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .final-buttons button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+
+   
+
+    <div class="message" id="native_message">
+        <h1>Datenschutz</h1>
+        <p>
+            Mit Ihrer Einwilligung erheben und verarbeiten wir und unsere Partner Nutzungsdaten, um dieses SmartTV-Angebot zu personalisieren und Ihnen personalisierte Werbung anzuzeigen. Hierfür können Cookies oder andere Informationen auf Ihrem Gerät gespeichert und abgerufen werden. Nutzungsprofile basierend auf Ihrer Nutzung unseres Angebots erstellt und die Werbeleistung gemessen werden. Auch können aus anderen Quellen stammende Informationen mit diesen Daten kombiniert werden. 
+        </p>
+        <p>
+            Informationen über ihre Nutzung unseres Angebots können mit Ihrer Einwilligung zudem zur Verbesserung und Entwicklung von Produkten und Dienstleistungen genutzt werden. Ihre Einwilligung erteilen Sie mit der Schaltfläche "Zustimmen". Über die Schaltfläche "Einstellungen oder Ablehnen" erhalten Sie weitere Informationen und können Ihre Einwilligung für ausgewählte Zwecke erteilen. Weitere Informationen zu uns und unseren Partnern sowie zu den Möglichkeiten, Ihre Einwilligung zu widerrufen, finden Sie in den Datenschutzbestimmungen (blaue Taste).
+        </p>
+        <div class="buttons">
+            <button onclick="_sp_.acceptAll();">Zustimmen</button>
+            <button onclick="_sp_.continue();">Weiter ohne Zustimmung</button>
+            <button onclick="_sp_.loadPrivacyManagerModal();">Einstellungen oder Ablehnen</button>
+        </div>
+    </div> 
+
+       <!-- Zweites Div für Datenschutz-Einstellungen -->
+    <div class="datenschutz-einstellungen" id="pm">
+    <button id="reload_pm">Zurück</button> 
+        <h2>Ihre Datenschutzeinstellungen</h2>
+        <p><strong>Informationen speichern und abrufen</strong><br>
+            Cookies, Endgeräte- oder ähnliche Online-Kennungen (z. B. login-basierte Kennungen, zufällig generierte Kennungen, netzwerkbasierte Kennungen) können zusammen mit anderen Informationen auf Ihrem Endgerät gespeichert oder von dort ausgelesen werden, um es jedes Mal wiederzuerkennen, wenn es eine App oder eine Webseite aufruft.
+        </p>
+        <p><strong>Personalisierte Werbung und Inhalte, Messung von Werbeleistung und der Performance von Inhalten</strong><br>
+            Anzeigen und Werbung können basierend auf Ihrem Profil personalisiert werden.
+        </p>
+        <p><strong>Erweiterte Funktionen</strong><br>
+            Erteilen Sie eine oder mehrere Zustimmungen, dann können wir Daten aus Offline-Datenquellen nutzen.
+        </p>
+
+        <div class="final-buttons" style="float: left;">
+            <button onclick="_sp_.acceptAll();">Allen Zustimmen</button>
+            <button onclick="_sp_.continue();">Weiter ohne Zustimmung</button>
+            <button onclick="_sp_.reject();">Alles Ablehnen</button>
+        </div>
+
+        <div class="qr-code">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=www.tcfv2.de/pm" id="qr" alt="QR Code" /><br />
+             <p>Scannen Sie den QR-Code, um Einstellungen und Anbieter auf Ihrem Mobilgerät anzupassen.</p>
+              <button id="reload_pm" onclick="_sp_.executeMessaging();">Neu Laden</button> 
+        </div>
+    </div>
+ 
+    <div style="display:none">
+        <p>To customize your privacy settings, please scan the QR code below. This will allow you to manage your granular consent preferences, deciding which data processing activities you wish to approve or decline. We value your privacy and want to give you full control over your choices.</p>
+       <p align="center"><img id="qr" class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=www.tcfv2.de/pm" /></p>
+       <p > After completing your settings on the second screen, please press the confirmation button to save your preferences.</p>
+        <p><button id="close_pm">Back to the first layer</button><button id="reload_pm">Reload CMP</button></p>
+
+    </div>
+    <script type="text/javascript">
+        window._sp_ = {
+            config: {
+                accountId: 2002,
+                propertyId: 37479,
+                propertyHref: "https://hbb.tv",
+                baseEndpoint: 'https://cdn.privacy-mgmt.com',
+                messageDiv: "native_message",
+                pmDiv: "pm", 
+                qrId: "qr",
+                qrUrl: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=",
+                pmUrl: "https://tcfv2.de/pm.php",
+                events: {
+                    onConsentReady: function( consentUUID, euconsent, vendorGrants) {
+                        console.log('Custom - onConsentReady');
+                        console.log('consentUUID: ' + consentUUID);
+                        console.log('euconsent: ' + euconsent);
+                        console.log(vendorGrants);
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="/index.min.js" type="text/javascript"> </script>  
+    <footer>
+        <button onclick="_sp_.loadPrivacyManagerModal();">Consent Einstellungen</button>
+    </footer>
+</body>
+
+</html>
