@@ -51,17 +51,15 @@ Edit the main source file in src/index.js.
 Run npm run build to generate the production-ready code.
 The minified file will be located at dist/index.min.js.
 
-# Missing Pieces
-
-1. Reconsent is in progress but not working atm
-2. Reporting is not available at this point
-3. Script assumes that GDPR always applies (need to make this dynamic using the vendor list scope)
-4. Message needs to be completly hardcoded at this point -> UI component exists and returns values in the APIs
 
 
 ## Button Actions
+The button actions in this project allow users to interact with the application through predefined functionalities. Each button triggers a specific behavior, enabling seamless integration and user-friendly workflows. Below is a detailed overview of the available actions and their corresponding outcomes.
+
 
 ### Accept All
+
+ Accept all consent options.
 
 ```javascript
   _sp_.accept_all()
@@ -69,17 +67,26 @@ The minified file will be located at dist/index.min.js.
 
 ### Continue Without Accepting
 
+Proceed without explicit consent while maintaining legitimate interest settings if configured.
+
 ```javascript
   _sp_.continue()
 ```
 
 ### Reject All
 
+Reject all consent options.
+
 ```javascript
   _sp_.reject()
 ```
 
 ### Open Second Layer
+Open the privacy manager modal for more detailed consent settings.
+
+javascript
+Code kopieren
+
 
 ```javascript
   _sp_.loadPrivacyManagerModal()
@@ -87,8 +94,16 @@ The minified file will be located at dist/index.min.js.
 
 ### Reload CMP
 
+ Reload the Consent Management Platform interface.
+
 ```javascript
   _sp_.executeMessaging()
 ```
 
 
+# Missing Pieces
+
+1. Reconsent is in progress but not working atm
+2. Reporting is not available at this point
+3. Script assumes that GDPR always applies (need to make this dynamic using the vendor list scope)
+4. Message needs to be completly hardcoded at this point -> UI component exists and returns values in the APIs
