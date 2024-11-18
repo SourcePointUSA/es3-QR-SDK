@@ -5,6 +5,8 @@ This project is a boilerplate for generating minified, ES3-compatible JavaScript
 # Table of Contents
 
 - [How to Install](#how-to-install)
+- [Usage](#usage)
+- [Missing Pieces](#missing-pieces)
 
 # How to Install
 1. Clone the repository or download the files.
@@ -44,12 +46,12 @@ my-npm-project/
 └── README.md            # Project instructions
 ```
 
-Usage
+# Usage
 Edit the main source file in src/index.js.
 Run npm run build to generate the production-ready code.
 The minified file will be located at dist/index.min.js.
 
-## Missing Pieces
+# Missing Pieces
 
 1. Reconsent is in progress but not working atm
 2. Reporting is not available at this point
@@ -61,31 +63,31 @@ The minified file will be located at dist/index.min.js.
 
 ### Accept All
 
-```code
+```javascript
   _sp_.accept_all()
 ```
 
 ### Continue Without Accepting
 
-```code
+```javascript
   _sp_.continue()
 ```
 
 ### Reject All
 
-```code
+```javascript
   _sp_.reject()
 ```
 
 ### Open Second Layer
 
-```code
+```javascript
   _sp_.loadPrivacyManagerModal()
 ```
 
 ### Reload CMP
 
-```code
+```javascript
   _sp_.executeMessaging()
 ```
 
