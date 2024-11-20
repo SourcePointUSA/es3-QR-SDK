@@ -20,6 +20,7 @@
 	var propertyHref = _sp_.config.propertyHref;
 	var propertyId = _sp_.config.propertyId;
 	var accountId = _sp_.config.accountId;
+	var isSPA = _sp_.config.isSPA;
 	var hasLocalData = false;
 	var dateCreated = getCookieValue("consentDate_"+propertyId);
 
@@ -89,7 +90,6 @@
 	}
 
     function extendSpObject() {	
-
         _sp_.executeMessaging = function() {
         	hideElement(pmDiv);
        		hideElement(messageDiv);
@@ -571,8 +571,12 @@
 
 	extendSpObject();
 	getMetaData();
-	getConsentStatus();
-	getMessages();
+	
+	if(!isSPA){
+		getConsentStatus();
+		getMessages();
+	}
+
 
 })();
 
