@@ -135,7 +135,7 @@
 	};
 
 	function onConsentReady(){
-		triggerEvent('onConsentReady', [consentUUID,euConsentString,vendorGrants]);
+		triggerEvent('onConsentReady', [consentUUID,euConsentString,vendorGrants,consentStatus]);
 	}
 
 	function showElement(elementId) {
@@ -564,7 +564,6 @@
 	    storeConsentResponse(res.consentStatusData.gdpr.consentStatus, res.consentStatusData.gdpr.consentUUID, res.consentStatusData.gdpr.dateCreated, res.consentStatusData.gdpr.euconsent, res.consentStatusData.gdpr.grants)
 	 }
 function buildMessage() {
-	console.log("buood");
     var data = JSON.parse(httpGet("https://cdn.privacy-mgmt.com/consent/tcfv2/vendor-list/categories?siteId=" + propertyId + "&consentLanguage=en"));
 
     // Update vendor counts
@@ -600,13 +599,12 @@ function buildMessage() {
         var newHTML = templateHTML;
         newHTML = newHTML.replace("{name}", category.name || "")
                          .replace("{description}", category.description || "")
-                         .replace("{type}", category.type || "");
+                         
 
         var tempDiv = document.createElement("div");
         tempDiv.innerHTML = newHTML;
 
         while (tempDiv.firstChild) {
-        	console.log(category);
             if (category.type === "IAB_STACK") {
                 stacksFragment.appendChild(tempDiv.firstChild);
             } else if (category.type === "IAB_PURPOSE") {

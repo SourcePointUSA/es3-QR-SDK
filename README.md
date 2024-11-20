@@ -113,7 +113,7 @@ _sp_ = {
     config: {
     	...
     	events: {
-			onConsentReady: function( consentUUID, euconsent, vendorGrants) {
+			onConsentReady: function( consentUUID, euconsent, vendorGrants, consentStatus) {
 			   console.log('Custom - onConsentReady');
 			   console.log('consentUUID: ' + consentUUID);
 			   console.log('euconsent: ' + euconsent);
