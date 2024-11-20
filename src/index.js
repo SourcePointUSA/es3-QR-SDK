@@ -21,14 +21,14 @@
 	var propertyId = _sp_.config.propertyId;
 	var accountId = _sp_.config.accountId;
 	var hasLocalData = false;
-	var dateCreated = getCookieValue("consentDate");
+	var dateCreated = getCookieValue("consentDate_"+propertyId);
 
-	var consentStatus = JSON.parse(decodeURIComponent(getCookieValue("consentStatus")))
-	var localState = JSON.parse(decodeURIComponent(getCookieValue("localState")))
-	var metaData = JSON.parse(decodeURIComponent(getCookieValue("metaData")))
-	var vendorGrants = JSON.parse(decodeURIComponent(getCookieValue("vendorGrants")))
+	var consentStatus = JSON.parse(decodeURIComponent(getCookieValue("consentStatus_"+propertyId)))
+	var localState = JSON.parse(decodeURIComponent(getCookieValue("localState_"+propertyId)))
+	var metaData = JSON.parse(decodeURIComponent(getCookieValue("metaData_"+propertyId)))
+	var vendorGrants = JSON.parse(decodeURIComponent(getCookieValue("vendorGrants_"+propertyId)))
 
-	var nonKeyedLocalState = JSON.parse(decodeURIComponent(getCookieValue("nonKeyedLocalState")))
+	var nonKeyedLocalState = JSON.parse(decodeURIComponent(getCookieValue("nonKeyedLocalState_"+propertyId)))
 
 	var	granularStatus = null;
 	var	consentAllRef = null;
@@ -281,9 +281,9 @@
 	    var res = JSON.parse(httpGet(fullURL));
 
 	    localState = res.localState;
-	    setCookie("localState", JSON.stringify(res.localState), 365);
+	    setCookie("localState_" + propertyId, JSON.stringify(res.localState), 365);
 	    nonKeyedLocalState = res.nonKeyedLocalState;
-	    setCookie("nonKeyedLocalState", JSON.stringify(res.nonKeyedLocalState), 365);
+	    setCookie("nonKeyedLocalState_" + propertyId, JSON.stringify(res.nonKeyedLocalState), 365);
 
 	    if (checkMessageJson(res)) {
 	        updateQrUrl(_sp_.config.qrUrl + _sp_.config.pmUrl +"?authId="+authId+"&propertyId="+propertyId+"&propertyHref="+propertyHref+"&accountId="+accountId);
@@ -507,19 +507,19 @@
 	    console.log("storeConsentResponse:", conStatus, uuid, cDate, euconsent);
 	    
 	    consentStatus = conStatus;
-	    setCookie("consentStatus", JSON.stringify(conStatus),365);
+	    setCookie("consentStatus_"+propertyId, JSON.stringify(conStatus),365);
 
 	    
 	    consentUUID = uuid;
 		setCookie("consentUUID", uuid, 365);
 	    
 	    consentDate = cDate;
-		setCookie("consentDate", cDate, 365);   	
+		setCookie("consentDate_"+propertyId, cDate, 365);   	
 	   	
 	   	euConsentString =euconsent;
-	    setCookie("euconsent-v2", euconsent);
+	    setCookie("euconsent-v2_"+propertyId, euconsent);
 
-		setCookie("vendorGrants", JSON.stringify(vGrants),365)
+		setCookie("vendorGrants_"+propertyId, JSON.stringify(vGrants),365)
 	    vendorGrants = vGrants;
 	   	
 	   	onConsentReady();	
@@ -566,7 +566,7 @@
 
 		    var res = JSON.parse(httpGet(buildUrl(baseUrl, params)));
 		    metaData = res;
-		    setCookie("metaData", JSON.stringify(metaData),365);
+		    setCookie("metaData_"+propertyId, JSON.stringify(metaData),365);
 	}
 
 	extendSpObject();
