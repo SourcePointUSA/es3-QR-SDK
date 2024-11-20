@@ -10,7 +10,7 @@
 	var scriptVersion = "0.0.2";
 	var scriptType = "es3";
 	var consentUUID = getCookieValue("consentUUID");
-	var authId = getCookieValue("authId");
+	var authId = getCookieValue("authId") || _sp_.config.authId;
 	var euConsentString = null;
 
 	var cb = Math.floor(Math.random() * 1000000);

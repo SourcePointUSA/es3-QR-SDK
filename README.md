@@ -93,6 +93,7 @@ A complete example has been included in the "example" folder within this reposit
 | `propertyHref`    | `string`   | **Required**. The name or URL of the property to be connected.                                            |
 | `baseEndpoint`    | `string`   | **Required**. The API endpoint. Use the default (`https://cdn.privacy-mgmt.com/`) unless a custom CNAME is required. |
 | `messageDiv`      | `string`   | **Required**. The ID of the `<div>` element where your consent message will appear.                       |
+| `authId`      | `string`   | **optional**. Allows your organization to pass a consent identifier to Sourcepoint to be used with authenticated consent. https://docs.sourcepoint.com/hc/en-us/articles/4403274791699-Authenticated-consent                |
 | `pmDiv`           | `string`   | **Required**. The ID of the `<div>` element designated for the privacy manager.                           |
 | `qrId`            | `string`   | **Required**. The ID of the `<img>` element where the QR code is displayed.                               |
 | `qrUrl`           | `string`   | **Required**. The URL of the QR code generator (no default; must be hosted on your infrastructure).        |
