@@ -91,9 +91,10 @@ A complete example has been included in the "example" folder within this reposit
 | `accountId`       | `integer`  | **Required**. The unique identifier for your account on Sourcepoint.                                      |
 | `propertyId`      | `integer`  | **Required**. Maps the implementation to a specific URL as set up in the Sourcepoint dashboard. Use this parameter to spoof messaging campaigns for testing or debugging.                                       |
 | `propertyHref`    | `string`   | **Required**. The name or URL of the property to be connected.                                            |
+| `consentLanguage`    | `string`   | **Required**. TEnforce that the message is delivered in the specified language regardless of an end-user's browser language setting. [Click here](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) for a list of ISO 639-1 language codes.                                           |
 | `baseEndpoint`    | `string`   | **Required**. The API endpoint. Use the default (`https://cdn.privacy-mgmt.com/`) unless a custom CNAME is required. |
 | `messageDiv`      | `string`   | **Required**. The ID of the `<div>` element where your consent message will appear.                       |
-| `authId`      | `string`   | **optional**. Allows your organization to pass a consent identifier to Sourcepoint to be used with authenticated consent. https://docs.sourcepoint.com/hc/en-us/articles/4403274791699-Authenticated-consent                |
+| `authId`      | `string`   | **optional**. Allows your organization to pass a consent identifier to Sourcepoint to be used with [authenticated consent](https://docs.sourcepoint.com/hc/en-us/articles/4403274791699-Authenticated-consent) .            |
 | `pmDiv`           | `string`   | **Required**. The ID of the `<div>` element designated for the privacy manager.                           |
 | `qrId`            | `string`   | **Required**. The ID of the `<img>` element where the QR code is displayed.                               |
 | `qrUrl`           | `string`   | **Required**. The URL of the QR code generator (no default; must be hosted on your infrastructure).        |
@@ -150,13 +151,58 @@ The button actions in this project allow users to interact with the application 
 | **Open Second Layer**   | Open the privacy manager modal for more detailed consent settings.                           | ```_sp_.loadPrivacyManagerModal() ``` |
 | **Reload CMP**          | Reload the Consent Management Platform interface.                                            | ```_sp_.executeMessaging()``` |
 
+
+# Dynamic Template Setup for Message
+
+This part of the readme explains how to define and use a flexible HTML template to dynamically generate content. The logic allows you to insert data into the template coming from the APIs
+
+## 1. Add Placeholders for Vendor Count in Your HTML
+
+Two types of vendor counts are available:
+
+Total Vendor Count: Includes all vendors.
+IAB Vendor Count: Includes only IAB-compliant vendors.
+Add one or both of the following elements to your HTML. These placeholders will automatically be replaced with values from the APIs before the message is displayed.
+ ```html
+<span class="all_vendor_count"></span> 
+<span class="iab_vendor_count"></span>
+ ```
+
+## 2. Define a Template for Stacks and Purposes
+
+Create a hidden HTML element that serves as the template. Use placeholders wrapped in curly braces ({}) to indicate where dynamic data will be inserted. You can include as many placeholders as needed.
+
+ ```html
+ <div id="stack_template" style="display: none;">
+    <div class="item">
+        <h2>{name}</h2>
+        <p>{description}</p>
+    </div>
+</div>
+```
+```{name}```: Placeholder for the purpose or stack name.
+```{description}```: Placeholder for the purpose or stack description.
+
+## 3. Add Containers
+
+Add optional containers to your HTML where the populated content will be placed. Use separate containers for different types of data if needed.
+
+Example:
+ ```html
+<div class="sp_stacks">
+    <!-- Dynamically generated stack items will appear here -->
+</div>
+
+<div class="sp_purposes">
+    <!-- Dynamically generated purpose items will appear here -->
+</div>
+ ```
+
+
 # Outstanding Issues
 
 1. Post and Revoke Custom consent is in progress
 2. Reporting functionality is not yet available.
 3. The script assumes GDPR is always applicable—this needs to be dynamic based on the vendor list scope.
 4. The message is fully hardcoded for now—the UI component exists and returns values via the APIs, but it's not yet integrated into the HTML.
-4.1. Missing Vendor Count Macro
-4.2. Pull Default IAB Text Components
 4.3. Pull Text Elements (SP Portal)
-4.4. Add Message Translations

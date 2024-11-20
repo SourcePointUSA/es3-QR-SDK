@@ -19,6 +19,7 @@
 	var propertyHref = _sp_.config.propertyHref;
 	var propertyId = _sp_.config.propertyId;
 	var accountId = _sp_.config.accountId;
+	var consentLanguage = _sp_.config.consentLanguage;
 	var isSPA = _sp_.config.isSPA;
 	var hasLocalData = false;
 	var dateCreated = getCookieValue("consentDate_"+propertyId);
@@ -85,6 +86,8 @@
 	        }
 	    };
 	}
+
+
 
     function extendSpObject() {	
         _sp_.executeMessaging = function() {
@@ -301,6 +304,7 @@
 
 	    if (checkMessageJson(res)) {
 	        updateQrUrl(_sp_.config.qrUrl + _sp_.config.pmUrl +"?authId="+authId+"&propertyId="+propertyId+"&propertyHref="+propertyHref+"&accountId="+accountId);
+	        buildMessage();
 	        showElement(messageDiv);
 	    }
 	}
@@ -559,6 +563,66 @@
 	    hasLocalData = true;
 	    storeConsentResponse(res.consentStatusData.gdpr.consentStatus, res.consentStatusData.gdpr.consentUUID, res.consentStatusData.gdpr.dateCreated, res.consentStatusData.gdpr.euconsent, res.consentStatusData.gdpr.grants)
 	 }
+function buildMessage() {
+	console.log("buood");
+    var data = JSON.parse(httpGet("https://cdn.privacy-mgmt.com/consent/tcfv2/vendor-list/categories?siteId=" + propertyId + "&consentLanguage=en"));
+
+    // Update vendor counts
+    var allVendorCountElements = document.getElementsByClassName("all_vendor_count");
+    for (var i = 0; i < allVendorCountElements.length; i++) {
+        allVendorCountElements[i].innerHTML = data.allVendorCount;
+    }
+
+    var iabVendorCountElements = document.getElementsByClassName("iab_vendor_count");
+    for (var i = 0; i < iabVendorCountElements.length; i++) {
+        iabVendorCountElements[i].innerHTML = data.iabVendorCount;
+    }
+
+    // Template and containers
+    var stackTemplate = document.getElementById("stack_template");
+    if (!stackTemplate) {
+        console.error("Template with ID 'stack_template' not found.");
+        return;
+    }
+    var templateHTML = stackTemplate.innerHTML;
+
+    var stacksContainers = document.getElementsByClassName("sp_stacks");
+    var purposesContainers = document.getElementsByClassName("sp_purposes");
+
+    // Use DocumentFragment for batch updates
+    var stacksFragment = document.createDocumentFragment();
+    var purposesFragment = document.createDocumentFragment();
+
+    for (var j = 0; j < data.categories.length; j++) {
+        var category = data.categories[j];
+
+        // Populate template
+        var newHTML = templateHTML;
+        newHTML = newHTML.replace("{name}", category.name || "")
+                         .replace("{description}", category.description || "")
+                         .replace("{type}", category.type || "");
+
+        var tempDiv = document.createElement("div");
+        tempDiv.innerHTML = newHTML;
+
+        while (tempDiv.firstChild) {
+        	console.log(category);
+            if (category.type === "IAB_STACK") {
+                stacksFragment.appendChild(tempDiv.firstChild);
+            } else if (category.type === "IAB_PURPOSE") {
+                purposesFragment.appendChild(tempDiv.firstChild);
+            }
+        }
+    }
+
+    // Append fragments to DOM
+    for (var k = 0; k < stacksContainers.length; k++) {
+        stacksContainers[k].appendChild(stacksFragment.cloneNode(true));
+    }
+    for (var k = 0; k < purposesContainers.length; k++) {
+        purposesContainers[k].appendChild(purposesFragment.cloneNode(true));
+    }
+}
 
 	function getMetaData(){
 			var baseUrl = baseEndpoint + '/wrapper/v2/meta-data';
@@ -588,8 +652,7 @@
 		getMessages();
 	}
 
+ 
+
 
 })();
-
-
-

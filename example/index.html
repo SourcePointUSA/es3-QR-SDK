@@ -21,10 +21,15 @@
             height: 100vh;
         }
 
-    #native_message {
-        display: none;
-    
-    }
+        footer{
+            position: absolute;
+            bottom: 1em;
+        }
+
+        #native_message {
+            display: none;
+        
+        }
 
      #pm {
         display: none;
@@ -185,28 +190,70 @@ position: relative;
         .final-buttons button:hover {
             background-color: rgba(255, 255, 255, 0.2);
         }
+
+
+ul {
+  list-style: none; 
+  padding: 0;
+  text-shadow: 0 1px 0 rgba(255,255,255,.5);
+}
+
+ul a {
+  position: relative;
+  display: block;
+  padding: .4em .4em .4em 2em;
+  margin: .5em 0;
+    background: #e7eaf6; 
+  color: #444;
+  text-decoration: none;
+  border-radius: .3em;
+  transition: .3s ease-out;
+}
+
+ul a:focus { background: #a2a8d3; }
+ul a:before {
+position: absolute;
+    left: -1em;
+    top: 50%;
+    margin-top: -1.0em;
+    background: #a2a8d3;
+    height: 1.6em;
+    width: 1.6em;
+    line-height: 1.5em;
+    border: .2em solid #fff;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 1em;
+ 
+}
     </style>
 </head>
 
-<body>
+<body onload="_sp_.executeMessaging()">
 
 
    
-
     <div class="message" id="native_message">
         <h1>Privacy Message</h1>
         <p>
-           We and our partners use device identifiers or similar technologies on the app and to collect and use personal data (e.g., your IP address). If you consent, the device identifiers or or the information can be stored locally or accessed on your device for the purpose described below. You can click “Accept All” or “manage Preferences” to customize your consent. For some of the purposes below, our partners use precise geolocation data, and they also rely on legitimate interests to process personal data. View our partners to see the purposes they believe for you can change have legitimate interest & you can change your settings at any time.
+           We and our <span class="all_vendor_count"></span> partners (<span class="iab_vendor_count"></span> IAB) use device identifiers or similar technologies on the app and to collect and use personal data (e.g., your IP address). If you consent, the device identifiers or or the information can be stored locally or accessed on your device for the purpose described below. You can click “Accept All” or “manage Preferences” to customize your consent. For some of the purposes below, our partners use precise geolocation data, and they also rely on legitimate interests to process personal data. View our partners to see the purposes they believe for you can change have legitimate interest & you can change your settings at any time.
         </p>
-
+        
+        <div id="stack_template" style="display: none;">
             <ul>
-                <li>Store and/or access information on a device</li>
-                <li>Select basic ads</li>
-                <li>Create a personalised ads profile</li>
-                <li>Select personalised ads</li>
-                <li>Create a personalised content profile</li>
-                ...
+                <li class=""><a href="#">{name}</a>
+                <p>{description}</li>
             </ul>
+        </div>
+
+        <div class="sp_stacks">
+            <h3>Stacks</h3>
+        </div>
+
+        <div class="sp_purposes">
+            <h3>Purposes</h3>
+        </div>
+
 
         <div class="buttons">
             <button onclick="_sp_.acceptAll();">Accept</button>
@@ -217,27 +264,27 @@ position: relative;
 
        <!-- Zweites Div für Datenschutz-Einstellungen -->
     <div class="datenschutz-einstellungen" id="pm">
+    <button id="reload_pm">Zurück</button> 
         <h2>Ihre Datenschutzeinstellungen</h2>
-        <p><strong>Informationen speichern und abrufen</strong><br>
-            Cookies, Endgeräte- oder ähnliche Online-Kennungen (z. B. login-basierte Kennungen, zufällig generierte Kennungen, netzwerkbasierte Kennungen) können zusammen mit anderen Informationen auf Ihrem Endgerät gespeichert oder von dort ausgelesen werden, um es jedes Mal wiederzuerkennen, wenn es eine App oder eine Webseite aufruft.
-        </p>
-        <p><strong>Personalisierte Werbung und Inhalte, Messung von Werbeleistung und der Performance von Inhalten</strong><br>
-            Anzeigen und Werbung können basierend auf Ihrem Profil personalisiert werden.
-        </p>
-        <p><strong>Erweiterte Funktionen</strong><br>
-            Erteilen Sie eine oder mehrere Zustimmungen, dann können wir Daten aus Offline-Datenquellen nutzen.
-        </p>
+
+    <div class="sp_stacks">
+        <h3>Stacks</h3>
+    </div>
+
+    <div class="sp_purposes">
+        <h3>Purposes</h3>
+    </div>
 
         <div class="final-buttons" style="float: left;">
-            <button onclick="_sp_.acceptAll();">Allen Zustimmen</button>
-            <button onclick="_sp_.continue();">Weiter ohne Zustimmung</button>
-            <button onclick="_sp_.reject();">Alles Ablehnen</button>
+            <button onclick="_sp_.acceptAll();">Accept All</button>
+            <button onclick="_sp_.continue();">Continue without Agreeing</button>
+            <button onclick="_sp_.reject();">Reject All</button>
         </div>
 
         <div class="qr-code">
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=www.tcfv2.de/pm" id="qr" alt="QR Code" /><br />
-             <p>Scannen Sie den QR-Code, um Einstellungen und Anbieter auf Ihrem Mobilgerät anzupassen.</p>
-              <button id="reload_pm" onclick="_sp_.executeMessaging();">Neu Laden</button> 
+             <p>To customize your privacy settings, please scan the QR code below</p>
+              <button id="reload_pm" onclick="_sp_.executeMessaging();">Update CMP</button> 
         </div>
     </div>
  
@@ -246,7 +293,6 @@ position: relative;
        <p align="center"><img id="qr" class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=www.tcfv2.de/pm" /></p>
        <p > After completing your settings on the second screen, please press the confirmation button to save your preferences.</p>
         <p><button id="close_pm">Back to the first layer</button><button id="reload_pm">Reload CMP</button></p>
-
     </div>
     <script type="text/javascript">
         window._sp_ = {
@@ -254,12 +300,14 @@ position: relative;
                 accountId: 22,
                 propertyId: 37811,
                 propertyHref: "https://ott.es3",
-                baseEndpoint: 'https://cdn.privacy-mgmt.com',
+                baseEndpoint: 'https://cmp.tcfv2.de',
                 messageDiv: "native_message",
+                // authId: "1234-5678-9083-3452", // optional 
+                isSPA : true, 
                 pmDiv: "pm", 
                 qrId: "qr",
                 qrUrl: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=",
-                pmUrl: "https://tcfv2.de/pm.php",
+                pmUrl: "https://tcfv2.de/native/pm.php",
                 events: {
                     onConsentReady: function( consentUUID, euconsent, vendorGrants) {
                         console.log('Custom - onConsentReady');
@@ -271,9 +319,9 @@ position: relative;
             }
         }
     </script>
-    <script src="/index.min.js" type="text/javascript"> </script>  
+    <script src="/native/index.min.js" type="text/javascript"> </script>  
     <footer>
-        <button onclick="_sp_.loadPrivacyManagerModal();">Consent Einstellungen</button>
+        <button onclick="_sp_.loadPrivacyManagerModal();">Consent Settings</button>
     </footer>
 </body>
 
