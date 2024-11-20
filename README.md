@@ -152,8 +152,11 @@ The button actions in this project allow users to interact with the application 
 
 # Outstanding Issues
 
-1. Reconsent is in progress but currently not functioning.
-2. Post and Revoke Custom consent is in progress
-3. Reporting functionality is not yet available.
-4. The script assumes GDPR is always applicable—this needs to be dynamic based on the vendor list scope.
-5. The message is fully hardcoded for now—the UI component exists and returns values via the APIs, but it's not yet integrated into the HTML.
+1. Post and Revoke Custom consent is in progress
+2. Reporting functionality is not yet available.
+3. The script assumes GDPR is always applicable—this needs to be dynamic based on the vendor list scope.
+4. The message is fully hardcoded for now—the UI component exists and returns values via the APIs, but it's not yet integrated into the HTML.
+4.1. Missing Vendor Count Macro
+4.2. Pull Default IAB Text Components
+4.3. Pull Text Elements (SP Portal)
+4.4. Add Message Translations
