@@ -154,6 +154,12 @@ The button actions in this project allow users to interact with the application 
 | **Open Second Layer**   | Open the privacy manager modal for more detailed consent settings.                           | ```_sp_.loadPrivacyManagerModal() ``` |
 | **Reload CMP**          | Reload the Consent Management Platform interface.                                            | ```_sp_.executeMessaging()``` |
 
+## Helpers
+| Action                  | Description                                                                                  | Code Example                          |
+|-------------------------|----------------------------------------------------------------------------------------------|---------------------------------------|
+| Consent Status          | Returns the consent status after executeMesaging() has been performed                                                                  | ``` _sp_.consentStatus() ``` |
+
+
 
 # Dynamic Template Setup for Message
 

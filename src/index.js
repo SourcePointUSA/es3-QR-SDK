@@ -122,7 +122,11 @@
         	hideElement(pmDiv);
         	hideElement(messageDiv);
         	rejectAll();
-        }  
+        } 
+        _sp_.consentStatus = function(){
+        	return consentStatus;
+        }
+     
     }
 
 	window._sp_.config.events = window._sp_.config.events || {};
@@ -657,8 +661,5 @@
 		getConsentStatus();
 		getMessages();
 	}
-
- 
-
 
 })();
