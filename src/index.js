@@ -39,6 +39,8 @@
 
 	var messageId = null;
 	var localState = null;
+
+	var messageElementsAdded = false; 
  
     if (consentUUID == null) {
         consentUUID = generateUUID();
@@ -304,7 +306,11 @@
 
 	    if (checkMessageJson(res)) {
 	        updateQrUrl(_sp_.config.qrUrl + _sp_.config.pmUrl +"?authId="+authId+"&propertyId="+propertyId+"&propertyHref="+propertyHref+"&accountId="+accountId);
-	        buildMessage();
+	        
+	        if(!messageElementsAdded){
+	       		buildMessage();
+	        }
+
 	        showElement(messageDiv);
 	    }
 	}
@@ -563,64 +569,66 @@
 	    hasLocalData = true;
 	    storeConsentResponse(res.consentStatusData.gdpr.consentStatus, res.consentStatusData.gdpr.consentUUID, res.consentStatusData.gdpr.dateCreated, res.consentStatusData.gdpr.euconsent, res.consentStatusData.gdpr.grants)
 	 }
-function buildMessage() {
-    var data = JSON.parse(httpGet("https://cdn.privacy-mgmt.com/consent/tcfv2/vendor-list/categories?siteId=" + propertyId + "&consentLanguage=en"));
 
-    // Update vendor counts
-    var allVendorCountElements = document.getElementsByClassName("all_vendor_count");
-    for (var i = 0; i < allVendorCountElements.length; i++) {
-        allVendorCountElements[i].innerHTML = data.allVendorCount;
-    }
+	function buildMessage() {
+    	var data = JSON.parse(httpGet(baseEndpoint + "/consent/tcfv2/vendor-list/categories?siteId=" + propertyId + "&consentLanguage=en"));
 
-    var iabVendorCountElements = document.getElementsByClassName("iab_vendor_count");
-    for (var i = 0; i < iabVendorCountElements.length; i++) {
-        iabVendorCountElements[i].innerHTML = data.iabVendorCount;
-    }
+	    // Update vendor counts
+	    var allVendorCountElements = document.getElementsByClassName("all_vendor_count");
+	    for (var i = 0; i < allVendorCountElements.length; i++) {
+	        allVendorCountElements[i].innerHTML = data.allVendorCount;
+	    }
 
-    // Template and containers
-    var stackTemplate = document.getElementById("stack_template");
-    if (!stackTemplate) {
-        console.error("Template with ID 'stack_template' not found.");
-        return;
-    }
-    var templateHTML = stackTemplate.innerHTML;
+	    var iabVendorCountElements = document.getElementsByClassName("iab_vendor_count");
+	    for (var i = 0; i < iabVendorCountElements.length; i++) {
+	        iabVendorCountElements[i].innerHTML = data.iabVendorCount;
+	    }
 
-    var stacksContainers = document.getElementsByClassName("sp_stacks");
-    var purposesContainers = document.getElementsByClassName("sp_purposes");
+	    // Template and containers
+	    var stackTemplate = document.getElementById("stack_template");
+	    if (!stackTemplate) {
+	        console.error("Template with ID 'stack_template' not found.");
+	        return;
+	    }
+	    var templateHTML = stackTemplate.innerHTML;
 
-    // Use DocumentFragment for batch updates
-    var stacksFragment = document.createDocumentFragment();
-    var purposesFragment = document.createDocumentFragment();
+	    var stacksContainers = document.getElementsByClassName("sp_stacks");
+	    var purposesContainers = document.getElementsByClassName("sp_purposes");
 
-    for (var j = 0; j < data.categories.length; j++) {
-        var category = data.categories[j];
+	    // Use DocumentFragment for batch updates
+	    var stacksFragment = document.createDocumentFragment();
+	    var purposesFragment = document.createDocumentFragment();
 
-        // Populate template
-        var newHTML = templateHTML;
-        newHTML = newHTML.replace("{name}", category.name || "")
-                         .replace("{description}", category.description || "")
-                         
+	    for (var j = 0; j < data.categories.length; j++) {
+	        var category = data.categories[j];
 
-        var tempDiv = document.createElement("div");
-        tempDiv.innerHTML = newHTML;
+	        // Populate template
+	        var newHTML = templateHTML;
+	        newHTML = newHTML.replace("{name}", category.name || "")
+	                         .replace("{description}", category.description || "")
+	                         
 
-        while (tempDiv.firstChild) {
-            if (category.type === "IAB_STACK") {
-                stacksFragment.appendChild(tempDiv.firstChild);
-            } else if (category.type === "IAB_PURPOSE") {
-                purposesFragment.appendChild(tempDiv.firstChild);
-            }
-        }
-    }
+	        var tempDiv = document.createElement("div");
+	        tempDiv.innerHTML = newHTML;
 
-    // Append fragments to DOM
-    for (var k = 0; k < stacksContainers.length; k++) {
-        stacksContainers[k].appendChild(stacksFragment.cloneNode(true));
-    }
-    for (var k = 0; k < purposesContainers.length; k++) {
-        purposesContainers[k].appendChild(purposesFragment.cloneNode(true));
-    }
-}
+	        while (tempDiv.firstChild) {
+	            if (category.type === "IAB_STACK") {
+	                stacksFragment.appendChild(tempDiv.firstChild);
+	            } else if (category.type === "IAB_PURPOSE") {
+	                purposesFragment.appendChild(tempDiv.firstChild);
+	            }
+	        }
+	    }
+
+	    // Append fragments to DOM
+	    for (var k = 0; k < stacksContainers.length; k++) {
+	        stacksContainers[k].appendChild(stacksFragment.cloneNode(true));
+	    }
+	    for (var k = 0; k < purposesContainers.length; k++) {
+	        purposesContainers[k].appendChild(purposesFragment.cloneNode(true));
+	    }
+	    messageElementsAdded = true; 
+	}
 
 	function getMetaData(){
 			var baseUrl = baseEndpoint + '/wrapper/v2/meta-data';

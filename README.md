@@ -6,7 +6,10 @@ This project is a boilerplate for generating minified, ES3-compatible JavaScript
 
 - [How to Install](#how-to-install)
 - [Usage](#usage)
-- [Outstanding issues](#putstanding-issues)
+- [Script Configuration Parameters](#script-configuration-parameters)
+- [Dynamic Template Setup for Message](#dynamic-template-setup-for-message)
+- [Outstanding issues](#outstanding-issues)
+
 
 
 # How to Install
