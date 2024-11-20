@@ -5,9 +5,8 @@
 		console.error("_sp_ - object undefined");
 	}
 
-	var nonKeyedLocalState = null;
 	var env = "prod";
-	var scriptVersion = "0.0.2";
+	var scriptVersion = "0.0.1";
 	var scriptType = "es3";
 	var consentUUID = getCookieValue("consentUUID");
 	var authId = getCookieValue("authId") || _sp_.config.authId;
@@ -43,13 +42,11 @@
     if (consentUUID == null) {
         consentUUID = generateUUID();
         setCookie("consentUUID", consentUUID, 365);
-        console.log("consentUUID: " + consentUUID + " generated and stored")
     } 
 
     if (authId == null) {
         authId = generateUUID();
         setCookie("authId", authId, 365);
-        console.log("authId: " + authId + " generated and stored")
     } 
 
     /*Polyfill for JSON*/
@@ -159,15 +156,31 @@
 	    return xmlHttp.responseText;
 	}
 
+	function compareDates(date1, date2) {
+	    var d1 = (typeof date1 === "object" && date1 instanceof Date) ? date1 : new Date(date1);
+	    var d2 = (typeof date2 === "object" && date2 instanceof Date) ? date2 : new Date(date2);
+
+	    var time1 = d1.getTime();
+	    var time2 = d2.getTime();
+
+	    if (time1 < time2) {
+	        return -1;
+	    } else if (time1 > time2) {
+	        return 1; 
+	    } else {
+	        return 0;
+	    }
+	}
+
 	function getCookieValue(name) {
 	    var cookies = document.cookie.split(';');
 	    for (var i = 0; i < cookies.length; i++) {
-	        var cookie = cookies[i].trim(); // Entfernt Leerzeichen um das Cookie herum
+	        var cookie = cookies[i].trim(); 
 	        if (cookie.indexOf(name + "=") === 0) {
 	            return cookie.substring((name + "=").length, cookie.length);
 	        }
 	    }
-	    return null; // Gibt null zurück, falls das Cookie nicht gefunden wurde
+	    return null; 
 	}
 
 	function buildUrl(baseUrl, params) {
@@ -193,9 +206,9 @@
 	        if (i === 8 || i === 13 || i === 18 || i === 23) {
 	            uuid[i] = '-';
 	        } else if (i === 14) {
-	            uuid[i] = '4'; // Die 13. Stelle ist immer "4" für UUID v4
+	            uuid[i] = '4';  
 	        } else {
-	            r = 0 | rnd() * 16; // Zufällige Zahl zwischen 0 und 15
+	            r = 0 | rnd() * 16;  
 	            uuid[i] = chars[(i === 19) ? (r & 0x3) | 0x8 : r];
 	        }
 	    }
@@ -207,8 +220,8 @@
 	    var expires = "";
 	    if (days) {
 	        var date = new Date();
-	        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Millisekunden für die Anzahl der Tage
-	        expires = "; expires=" + date.toUTCString(); // Ablaufdatum im UTC-Format
+	        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); 
+	        expires = "; expires=" + date.toUTCString();
 	    }
 	    document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
 	}
@@ -229,10 +242,13 @@
 		return false;
 	}
  
-
-
 	function getMessages() {
-    	console.log("getMessages()");
+    	if(compareDates(metaData.gdpr.legalBasisChangeDate, consentDate) === 1){
+    		consentStatus.legalBasisChanges = true;
+    	}	
+    	if(compareDates(metaData.gdpr.additionsChangeDate, consentDate) === 1){
+    		 consentStatus.vendorListAdditions = true;
+    	}
 
 	    var baseURL = baseEndpoint + '/wrapper/v2/messages';
 	    var queryParams = '?hasCsp=true&env=prod';
@@ -244,7 +260,7 @@
 	            gdpr: {
 	                consentStatus: consentStatus,
 	                hasLocalData: hasLocalData,
-	                targetingParams: {}
+	                targetingParams: {},
 	            }
 	        },
 	        clientMMSOrigin: baseEndpoint,
@@ -260,20 +276,18 @@
 	                type: "RecordString"
 	            }
 	        },
-	        propertyHref: _sp_.config.propertyHref,
-	        propertyId: _sp_.config.propertyId,
-	        authId: authId
+	        propertyHref: propertyHref,
+	        propertyId: propertyId,
+	        authId: authId,
+
 	    };
 
 	    var bodyEncoded = encodeURIComponent(JSON.stringify(body));
-
-	    // GDRP applies immer true
-	    var metaData = encodeURIComponent('{"gdpr":{"applies":true}}');
 	    
 	    var fullURL = baseURL + queryParams +
 	        '&body=' + bodyEncoded +
 	        '&localState=' + localState +
-	        '&metadata=' + metaData +
+	        '&metadata=' + encodeURIComponent(JSON.stringify(metaData)) +
 	        '&nonKeyedLocalState=' + nonKeyedLocalState +
 	        '&ch=' + cb +
 	        '&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
@@ -310,7 +324,7 @@
 	        accountId: accountId,
 	        env: 'prod',
 	        includeCustomVendorsRes: 'true',
-	        metadata: JSON.stringify(metaData), // URL-encoded JSON
+	        metadata: JSON.stringify(metaData),
 	        propertyId: propertyId,
 	        withSiteActions: 'true',
 	        ch: cb,
@@ -371,8 +385,6 @@
 
 	function sendGranularChoiceRequest(pmSaveAndExitVariables){
 	    var req = new XMLHttpRequest();
-
-	    console.log(pmSaveAndExitVariables)
 	    var url = baseEndpoint + '/wrapper/v2/choice/gdpr/1?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
 	    req.open('POST', url, false); 
 
@@ -417,7 +429,7 @@
 	    var url = baseEndpoint + '/wrapper/v2/choice/gdpr/13?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
 
 	    var req = new XMLHttpRequest();
-	    req.open('POST', url, false); // Asynchrone POST-Anfrage
+	    req.open('POST', url, false);  
 	 
 	    req.setRequestHeader('accept', '*/*');
 	    req.setRequestHeader('accept-language', 'de,en;q=0.9');
@@ -441,7 +453,6 @@
 
 	    var jsonData = JSON.stringify(data);
 
-	    // Callback für den Fall, dass die Anfrage abgeschlossen ist
 	    req.onreadystatechange = function() {
 	        if (req.readyState === 4 && req.status === 200) {
 	            var res = JSON.parse(req.responseText);
@@ -489,6 +500,8 @@
 	        vendorListId: consentdata.gdpr.vendorListId
 	    };
 
+
+
 	    var jsonData = JSON.stringify(data);
 
 	    req.onreadystatechange = function() {
@@ -503,9 +516,7 @@
 	    req.send(jsonData);
 	}
 
-	function storeConsentResponse(conStatus, uuid, cDate, euconsent, vGrants){
-	    console.log("storeConsentResponse:", conStatus, uuid, cDate, euconsent);
-	    
+	function storeConsentResponse(conStatus, uuid, cDate, euconsent, vGrants){	    
 	    consentStatus = conStatus;
 	    setCookie("consentStatus_"+propertyId, JSON.stringify(conStatus),365);
 
@@ -527,7 +538,6 @@
 	}
 
 	function getConsentStatus(){
-	    console.log("getConsentStatus() executed");
 	    var baseUrl = baseEndpoint +'/wrapper/v2/consent-status';
 	    var params = {
 	      hasCsp: 'true',
@@ -567,6 +577,7 @@
 		    var res = JSON.parse(httpGet(buildUrl(baseUrl, params)));
 		    metaData = res;
 		    setCookie("metaData_"+propertyId, JSON.stringify(metaData),365);
+
 	}
 
 	extendSpObject();
