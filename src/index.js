@@ -126,6 +126,19 @@
         _sp_.consentStatus = function(){
         	return consentStatus;
         }
+
+        _sp_.clearUserData = function(){
+        	deleteCookie("authId");
+        	deleteCookie("consentUUID");
+        	deleteCookie("metaData_"+propertyId);
+        	deleteCookie("consentDate_"+propertyId);
+        	deleteCookie("consentStatus_"+propertyId);
+        	deleteCookie("euconsent-v2_"+propertyId);
+        	deleteCookie("localState_"+propertyId);
+        	deleteCookie("nonKeyedLocalState_"+propertyId);
+        	deleteCookie("vendorGrants_"+propertyId);
+        	return true; 
+        }
      
     }
 
@@ -190,6 +203,10 @@
 	        }
 	    }
 	    return null; 
+	}
+
+	function deleteCookie(name) {
+    	document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 	}
 
 	function buildUrl(baseUrl, params) {
