@@ -138,8 +138,7 @@
         	deleteCookie("nonKeyedLocalState_"+propertyId);
         	deleteCookie("vendorGrants_"+propertyId);
         	return true; 
-        }
-     
+        }     
     }
 
 	window._sp_.config.events = window._sp_.config.events || {};

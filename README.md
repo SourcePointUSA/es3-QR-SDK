@@ -158,6 +158,7 @@ The button actions in this project allow users to interact with the application 
 | Action                  | Description                                                                                  | Code Example                          |
 |-------------------------|----------------------------------------------------------------------------------------------|---------------------------------------|
 | Consent Status          | Returns the consent status after executeMesaging() has been performed                                                                  | ``` _sp_.consentStatus() ``` |
+| Clear User Data          | clears users cookies for the active property                                                                  | ``` _sp_.clearUserData() ``` |
 
 
 
