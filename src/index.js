@@ -9,8 +9,10 @@
 	var scriptVersion = "0.0.1";
 	var scriptType = "es3";
 	var consentUUID = getCookieValue("consentUUID");
+	var sampledUser = getCookieValue("sp_su");
 	var authId = getCookieValue("authId") || _sp_.config.authId;
 	var euConsentString = null;
+	var gdprApplies = true;
 
 	var cb = Math.floor(Math.random() * 1000000);
 
@@ -37,7 +39,9 @@
 	var messageDiv = _sp_.config.messageDiv;
 	var pmDiv = _sp_.config.pmDiv;
 
+
 	var messageId = null;
+	var messageMetaData = null; 
 	var localState = null;
 
 	var messageElementsAdded = false; 
@@ -255,7 +259,10 @@
 	    if (response.campaigns && Array.isArray(response.campaigns)) {
 	        for (var i = 0; i < response.campaigns.length; i++) {
 	            var campaign = response.campaigns[i];
+
+
 	            if (campaign.message && campaign.message.message_json) {
+	            	messageMetaData = campaign.messageMetaData
 	            	messageId = campaign.messageMetaData.messageId;
 	                console.log("Show Message with id " + messageId);
 	                return campaign.message.message_json;
@@ -324,6 +331,8 @@
 	    nonKeyedLocalState = res.nonKeyedLocalState;
 	    setCookie("nonKeyedLocalState_" + propertyId, JSON.stringify(res.nonKeyedLocalState), 365);
 
+
+
 	    if (checkMessageJson(res)) {
 	        updateQrUrl(_sp_.config.qrUrl + _sp_.config.pmUrl +"?authId="+authId+"&propertyId="+propertyId+"&propertyHref="+propertyHref+"&accountId="+accountId);
 	        
@@ -333,6 +342,9 @@
 
 	        showElement(messageDiv);
 	    }
+
+		sendReportingData();
+
 	}
 
 	function updateQrUrl( newUrl) {
@@ -435,7 +447,7 @@
 	            customVendorsResponse: {type: "RecordString"}
 	        },
 	        uuid: consentUUID,
-	        sampleRate: 1,
+	        sampleRate: metaData.gdpr.sampleRate,
 	        sendPVData: false,
 	        pmSaveAndExitVariables : pmSaveAndExitVariables
 	    };
@@ -477,7 +489,7 @@
 	            customVendorsResponse: {type: "RecordString"}
 	        },
 	        uuid: consentUUID,
-	        sampleRate: 1,
+	        sampleRate: metaData.gdpr.sampleRate,
 	        sendPVData: true
 		};
 
@@ -523,7 +535,7 @@
 	            customVendorsResponse: {type: "RecordString"}
 	        },
 	        uuid: consentUUID,
-	        sampleRate: 1,
+	        sampleRate: metaData.gdpr.sampleRate,
 	        sendPVData: false,
 	        consentAllRef: consentAllRef,
 	        granularStatus:consentStatus,
@@ -649,6 +661,68 @@
 	    }
 	    messageElementsAdded = true; 
 	}
+
+	function sampleUser(sampleRate) {
+		if(!sampledUser){
+			var randomValue = Math.random();
+			sampledUser = randomValue < sampleRate;
+			setCookie("sp_su", JSON.stringify(sampledUser), 365);
+		}
+
+		return sampledUser
+	}
+
+
+	function sendReportingData() {
+	 	sampleUser(metaData.gdpr.sampleRate);
+	 	if(sampledUser === "true"){       
+	        var data = {
+	        	gdpr:{
+	        		applies: true,
+	        		consentStatus,
+	        		accountId: accountId,
+		        	euconsent : euConsentString,
+		        	mmsDomain: baseEndpoint,
+		        	propertyId: propertyId,
+		        	siteId: propertyId,
+		        	pubData: {},
+		        	uuid: consentUUID,
+		        	sampleRate: metaData.gdpr.sampleRate,
+		        	sendPVData: true
+	        	}
+			};
+
+			if (messageMetaData) {
+			    data.gdpr.categoryId = messageMetaData.categoryId;
+			    data.gdpr.subCategoryId = messageMetaData.subCategoryId;
+			    data.gdpr.msgId = messageMetaData.messageId;
+			}
+
+		    var url = baseEndpoint + '/wrapper/v2/pv-data?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
+
+		    var req = new XMLHttpRequest();
+		    req.open('POST', url, false);  
+		 
+		    req.setRequestHeader('accept', '*/*');
+		    req.setRequestHeader('accept-language', 'de,en;q=0.9');
+		    req.setRequestHeader('content-type', 'application/json');
+		    
+		    var jsonData = JSON.stringify(data);
+
+		    req.onreadystatechange = function() {
+		        if (req.readyState === 4 && req.status === 200) {
+		            var res = JSON.parse(req.responseText);
+
+		        }else{
+		            console.error('error:', req.responseText);
+		        }
+		    };
+
+		    req.send(jsonData);
+	 	}  
+	}
+
+
 
 	function getMetaData(){
 			var baseUrl = baseEndpoint + '/wrapper/v2/meta-data';
