@@ -141,6 +141,7 @@
         	deleteCookie("localState_"+propertyId);
         	deleteCookie("nonKeyedLocalState_"+propertyId);
         	deleteCookie("vendorGrants_"+propertyId);
+        	deleteCookie("sp_su");
         	return true; 
         }     
     }
@@ -313,14 +314,12 @@
 	        authId: authId,
 
 	    };
-
-	    var bodyEncoded = encodeURIComponent(JSON.stringify(body));
 	    
 	    var fullURL = baseURL + queryParams +
-	        '&body=' + bodyEncoded +
-	        '&localState=' + localState +
+	        '&body=' + encodeURIComponent(JSON.stringify(body)) +
+	        '&localState=' + encodeURIComponent(JSON.stringify(localState)) +
 	        '&metadata=' + encodeURIComponent(JSON.stringify(metaData)) +
-	        '&nonKeyedLocalState=' + nonKeyedLocalState +
+	        '&nonKeyedLocalState=' + encodeURIComponent(JSON.stringify(nonKeyedLocalState)) +
 	        '&ch=' + cb +
 	        '&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
 
@@ -347,9 +346,8 @@
 
 	}
 
-	function updateQrUrl( newUrl) {
-
-	    var image = document.getElementById(_sp_.config.qrUrl);
+	function updateQrUrl(newUrl) {
+	    var image = document.getElementById(_sp_.config.qrId);
 
 	    if (image) {
 	        var timestamp = new Date().getTime(); 
@@ -688,7 +686,7 @@
 		        	pubData: {},
 		        	uuid: consentUUID,
 		        	sampleRate: metaData.gdpr.sampleRate,
-		        	sendPVData: true
+		        	withSiteActions: true
 	        	}
 			};
 
@@ -696,6 +694,7 @@
 			    data.gdpr.categoryId = messageMetaData.categoryId;
 			    data.gdpr.subCategoryId = messageMetaData.subCategoryId;
 			    data.gdpr.msgId = messageMetaData.messageId;
+			    data.gdpr.prtnUUID = messageMetaData.prtnUUID;
 			}
 
 		    var url = baseEndpoint + '/wrapper/v2/pv-data?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
