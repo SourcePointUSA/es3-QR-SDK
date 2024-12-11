@@ -77,6 +77,10 @@ The minified file will be located at dist/index.min.js.
                         console.log('consentUUID: ' + consentUUID);
                         console.log('euconsent: ' + euconsent);
                         console.log(vendorGrants);
+                    },
+                    onMessageComposed:function(){
+                        console.log("onMessageComposed");
+                        //a callback to perform UI actions AFTER dynamic elements are added
                     }
                 }
             }
@@ -152,7 +156,8 @@ The button actions in this project allow users to interact with the application 
 | **Continue Without Accepting** | Proceed without explicit consent while maintaining legitimate interest settings if configured. | ```_sp_.continue() ```   |
 | **Reject All**          | Reject all consent options.                                                                  | ``` _sp_.reject() ```     |
 | **Open Second Layer**   | Open the privacy manager modal for more detailed consent settings.                           | ```_sp_.loadPrivacyManagerModal() ``` |
-| **Reload CMP**          | Reload the Consent Management Platform interface.                                            | ```_sp_.executeMessaging()``` |
+| **Start Messaging**          | starts the cmp experience                                            | ```_sp_.executeMessaging()``` |
+| **Reload CMP**          | Reload the Consent Management Platform interface after making a granular choice on the second screen.                                            | ```_sp_.updateConsentStatus()``` |
 
 ## Helpers
 | Action                  | Description                                                                                  | Code Example                          |

@@ -143,6 +143,15 @@
         	deleteCookie("vendorGrants_"+propertyId);
         	deleteCookie("sp_su");
         	return true; 
+        }
+
+        _sp_.updateConsentStatus = function(){
+        	hideElement(pmDiv);
+        	hideElement(messageDiv);
+        	getConsentStatus();
+			getMessages();
+            console.log('consentUpdated');
+
         }     
     }
 
@@ -159,6 +168,10 @@
 
 	function onConsentReady(){
 		triggerEvent('onConsentReady', [consentUUID,euConsentString,vendorGrants,consentStatus]);
+	}
+
+	function onMessageComposed(){
+		triggerEvent('onMessageComposed');
 	}
 
 	function showElement(elementId) {
@@ -261,7 +274,6 @@
 	        for (var i = 0; i < response.campaigns.length; i++) {
 	            var campaign = response.campaigns[i];
 
-
 	            if (campaign.message && campaign.message.message_json) {
 	            	messageMetaData = campaign.messageMetaData
 	            	messageId = campaign.messageMetaData.messageId;
@@ -333,12 +345,6 @@
 
 
 	    if (checkMessageJson(res)) {
-	        updateQrUrl(_sp_.config.qrUrl + _sp_.config.pmUrl +"?authId="+authId+"&propertyId="+propertyId+"&propertyHref="+propertyHref+"&accountId="+accountId);
-	        
-	        if(!messageElementsAdded){
-	       		buildMessage();
-	        }
-
 	        showElement(messageDiv);
 	    }
 
@@ -658,6 +664,7 @@
 	        purposesContainers[k].appendChild(purposesFragment.cloneNode(true));
 	    }
 	    messageElementsAdded = true; 
+	    onMessageComposed();
 	}
 
 	function sampleUser(sampleRate) {
@@ -750,5 +757,14 @@
 		getConsentStatus();
 		getMessages();
 	}
+
+	console.log('QR');
+
+	updateQrUrl(_sp_.config.qrUrl + _sp_.config.pmUrl +"?authId="+authId+"&propertyId="+propertyId+"&propertyHref="+propertyHref+"&accountId="+accountId);
+	        
+    if(!messageElementsAdded){
+    	console.log("BM")
+   		buildMessage();
+    }
 
 })();
