@@ -664,6 +664,9 @@
 	        purposesContainers[k].appendChild(purposesFragment.cloneNode(true));
 	    }
 	    messageElementsAdded = true; 
+
+		document.getElementById("firstfocus").focus();
+
 	    onMessageComposed();
 	}
 
