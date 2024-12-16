@@ -21,12 +21,13 @@
 	var propertyHref = _sp_.config.propertyHref;
 	var propertyId = _sp_.config.propertyId;
 	var accountId = _sp_.config.accountId;
-	var consentLanguage = _sp_.config.consentLanguage;
+	var consentLanguage = _sp_.config.consentLanguage || "EN";;
 	var isSPA = _sp_.config.isSPA;
 	var hasLocalData = false;
 	var dateCreated = getCookieValue("consentDate_"+propertyId);
 
-	var consentStatus = JSON.parse(decodeURIComponent(getCookieValue("consentStatus_"+propertyId)))
+
+	var consentStatus = JSON.parse(decodeURIComponent(getCookieValue("consentStatus_"+propertyId))) || null
 	var localState = JSON.parse(decodeURIComponent(getCookieValue("localState_"+propertyId)))
 	var metaData = JSON.parse(decodeURIComponent(getCookieValue("metaData_"+propertyId)))
 	var vendorGrants = JSON.parse(decodeURIComponent(getCookieValue("vendorGrants_"+propertyId)))
@@ -38,6 +39,7 @@
 	var	gdprApplies = null;
 	var messageDiv = _sp_.config.messageDiv;
 	var pmDiv = _sp_.config.pmDiv;
+
 
 
 	var messageId = null;
@@ -92,8 +94,6 @@
 	        }
 	    };
 	}
-
-
 
     function extendSpObject() {	
         _sp_.executeMessaging = function() {
@@ -282,74 +282,85 @@
 	            }
 	        }
 	    }
-	    onConsentReady();
+
+		onConsentReady();
+
 		console.info("no message in the api response");
 		return false;
 	}
  
 	function getMessages() {
-    	if(compareDates(metaData.gdpr.legalBasisChangeDate, consentDate) === 1){
-    		consentStatus.legalBasisChanges = true;
-    	}	
-    	if(compareDates(metaData.gdpr.additionsChangeDate, consentDate) === 1){
-    		 consentStatus.vendorListAdditions = true;
-    	}
+		if(dateCreated !== null){
+	    	if(compareDates(metaData.gdpr.legalBasisChangeDate, dateCreated) === 1){
+	    		consentStatus.legalBasisChanges = true;
+	    		console.log("legalBasisChanges");
+	    	}	
+	    	if(compareDates(metaData.gdpr.additionsChangeDate, dateCreated) === 1){
+	    		 consentStatus.vendorListAdditions = true;
+	    		 console.log("vendorListAdditions");
+	    	}
+		}
 
-	    var baseURL = baseEndpoint + '/wrapper/v2/messages';
-	    var queryParams = '?hasCsp=true&env=prod';
+    	if(
+    		consentStatus.legalBasisChanges === true || 
+    		consentStatus.vendorListAdditions === true || 
+    		consentStatus.consentedAll  !== true)
+    	{
+    		var baseURL = baseEndpoint + '/wrapper/v2/messages';
+	    	var queryParams = '?hasCsp=true&env=prod';
 
-	    var body = {    
-	        accountId: accountId,
-	        campaignEnv: "prod",
-	        campaigns: {
-	            gdpr: {
-	                consentStatus: consentStatus,
-	                hasLocalData: hasLocalData,
-	                targetingParams: {},
-	            }
-	        },
-	        clientMMSOrigin: baseEndpoint,
-	        hasCSP: true,
-	        includeData: {
-	            localState: {
-	                type: "string"
-	            },
-	            actions: {
-	                type: "RecordString"
-	            },
-	            cookies: {
-	                type: "RecordString"
-	            }
-	        },
-	        propertyHref: propertyHref,
-	        propertyId: propertyId,
-	        authId: authId,
+		    var body = {    
+		        accountId: accountId,
+		        campaignEnv: "prod",
+		        campaigns: {
+		            gdpr: {
+		                consentStatus: consentStatus,
+		                hasLocalData: hasLocalData,
+		                targetingParams: {},
+		            }
+		        },
+		        clientMMSOrigin: baseEndpoint,
+		        hasCSP: true,
+		        includeData: {
+		            localState: {
+		                type: "string"
+		            },
+		            actions: {
+		                type: "RecordString"
+		            },
+		            cookies: {
+		                type: "RecordString"
+		            }
+		        },
+		        propertyHref: propertyHref,
+		        propertyId: propertyId,
+		        authId: authId,
 
-	    };
+		    };
 	    
-	    var fullURL = baseURL + queryParams +
-	        '&body=' + encodeURIComponent(JSON.stringify(body)) +
-	        '&localState=' + encodeURIComponent(JSON.stringify(localState)) +
-	        '&metadata=' + encodeURIComponent(JSON.stringify(metaData)) +
-	        '&nonKeyedLocalState=' + encodeURIComponent(JSON.stringify(nonKeyedLocalState)) +
-	        '&ch=' + cb +
-	        '&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
+		    var fullURL = baseURL + queryParams +
+		        '&body=' + encodeURIComponent(JSON.stringify(body)) +
+		        '&localState=' + encodeURIComponent(JSON.stringify(localState)) +
+		        '&metadata=' + encodeURIComponent(JSON.stringify(metaData)) +
+		        '&nonKeyedLocalState=' + encodeURIComponent(JSON.stringify(nonKeyedLocalState)) +
+		        '&ch=' + cb +
+		        '&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
 
-	    var res = JSON.parse(httpGet(fullURL));
+		    var res = JSON.parse(httpGet(fullURL));
 
-	    localState = res.localState;
-	    setCookie("localState_" + propertyId, JSON.stringify(res.localState), 365);
-	    nonKeyedLocalState = res.nonKeyedLocalState;
-	    setCookie("nonKeyedLocalState_" + propertyId, JSON.stringify(res.nonKeyedLocalState), 365);
+		    localState = res.localState;
+		    setCookie("localState_" + propertyId, JSON.stringify(res.localState), 365);
+		    nonKeyedLocalState = res.nonKeyedLocalState;
+		    setCookie("nonKeyedLocalState_" + propertyId, JSON.stringify(res.nonKeyedLocalState), 365);
 
-
-
-	    if (checkMessageJson(res)) {
-	        showElement(messageDiv);
-	    }
-
+		    if (checkMessageJson(res)) {
+		        showElement(messageDiv);
+		    }
+    	}
+    	else{
+    		onConsentReady()
+    	}
 		sendReportingData();
-
 	}
 
 	function updateQrUrl(newUrl) {
@@ -430,13 +441,9 @@
 
 
 	function sendGranularChoiceRequest(pmSaveAndExitVariables){
-	    var req = new XMLHttpRequest();
-	    var url = baseEndpoint + '/wrapper/v2/choice/gdpr/1?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
-	    req.open('POST', url, false); 
 
-	    req.setRequestHeader('accept', '*/*');
-	    req.setRequestHeader('accept-language', 'de,en;q=0.9');
-	    req.setRequestHeader('content-type', 'application/json');
+	    var url = baseEndpoint + '/wrapper/v2/choice/gdpr/1?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
+	    var req = createPostRequest(url);
 	    
 	    var data = {
 	        accountId: accountId,
@@ -474,12 +481,8 @@
 	 
 	    var url = baseEndpoint + '/wrapper/v2/choice/gdpr/13?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
 
-	    var req = new XMLHttpRequest();
-	    req.open('POST', url, false);  
-	 
-	    req.setRequestHeader('accept', '*/*');
-	    req.setRequestHeader('accept-language', 'de,en;q=0.9');
-	    req.setRequestHeader('content-type', 'application/json');
+	    var req = createPostRequest(url);
+ 
 	    var data = {
 	        accountId: accountId,
 	        applies: gdprApplies,
@@ -497,8 +500,6 @@
 	        sendPVData: true
 		};
 
-	    var jsonData = JSON.stringify(data);
-
 	    req.onreadystatechange = function() {
 	        if (req.readyState === 4 && req.status === 200) {
 	            var res = JSON.parse(req.responseText);
@@ -508,7 +509,7 @@
 	        }
 	    };
 
-	    req.send(jsonData);
+	    req.send(JSON.stringify(data));
 	}
 
 	function sendAcceptAllRequest(consentdata) {
@@ -518,13 +519,6 @@
 		euConsentString = consentdata.gdpr.euconsent
 	 
 	    var url = baseEndpoint + '/wrapper/v2/choice/gdpr/11?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
-
-	    var req = new XMLHttpRequest();
-	    req.open('POST', url, false); // Asynchrone POST-Anfrage
-	 
-	    req.setRequestHeader('accept', '*/*');
-	    req.setRequestHeader('accept-language', 'de,en;q=0.9');
-	    req.setRequestHeader('content-type', 'application/json');
 
 	    var data = {
 	        accountId: accountId,
@@ -546,21 +540,21 @@
 	        vendorListId: consentdata.gdpr.vendorListId
 	    };
 
-
-
-	    var jsonData = JSON.stringify(data);
+	    var req = createPostRequest(url);
 
 	    req.onreadystatechange = function() {
 	        if (req.readyState === 4 && req.status === 200) {
 	        	var res = JSON.parse(req.responseText);
-	        	storeConsentResponse(consentdata.gdpr.consentStatus, res.uuid, res.consentDate, euConsentString, consentdata.gdpr.grants)	
+	        	storeConsentResponse(consentdata.gdpr.consentStatus, res.uuid, res.dateCreated, euConsentString, consentdata.gdpr.grants)	
 	        }else{
 	        	console.error('error:', req.responseText);
 	        }
 	    };
 
-	    req.send(jsonData);
+	    req.send(JSON.stringify(data));
 	}
+
+
 
 	function storeConsentResponse(conStatus, uuid, cDate, euconsent, vGrants){	    
 	    consentStatus = conStatus;
@@ -584,6 +578,18 @@
 	}
 
 	function getConsentStatus(){
+
+		console.log("getConsentStatus");
+
+		if (consentStatus !== null) {
+			console.log("consent status found");
+			console.log(consentStatus);
+			if(consentStatus.consentedAll){
+				console.log("user is consented to all, skipping consent status")
+				return;
+ 			}
+		}
+
 	    var baseUrl = baseEndpoint +'/wrapper/v2/consent-status';
 	    var params = {
 	      hasCsp: 'true',
@@ -606,8 +612,18 @@
 	    storeConsentResponse(res.consentStatusData.gdpr.consentStatus, res.consentStatusData.gdpr.consentUUID, res.consentStatusData.gdpr.dateCreated, res.consentStatusData.gdpr.euconsent, res.consentStatusData.gdpr.grants)
 	 }
 
+	function createPostRequest(url){
+		var req = new XMLHttpRequest();
+	    req.open('POST', url, false);
+	    req.setRequestHeader('accept', '*/*');
+	    req.setRequestHeader('accept-language', 'de,en;q=0.9');
+	    req.setRequestHeader('content-type', 'application/json');
+	    return req;
+	}
+
 	function buildMessage() {
-    	var data = JSON.parse(httpGet(baseEndpoint + "/consent/tcfv2/vendor-list/categories?siteId=" + propertyId + "&consentLanguage=en"));
+    	var data = JSON.parse(httpGet(baseEndpoint + "/consent/tcfv2/vendor-list/categories?siteId=" + propertyId + "&consentLanguage="+consentLanguage));
+    	updateQrUrl(_sp_.config.qrUrl + _sp_.config.pmUrl +"?authId="+authId);
 
 	    // Update vendor counts
 	    var allVendorCountElements = document.getElementsByClassName("all_vendor_count");
@@ -656,16 +672,14 @@
 	        }
 	    }
 
-	    // Append fragments to DOM
 	    for (var k = 0; k < stacksContainers.length; k++) {
 	        stacksContainers[k].appendChild(stacksFragment.cloneNode(true));
 	    }
 	    for (var k = 0; k < purposesContainers.length; k++) {
 	        purposesContainers[k].appendChild(purposesFragment.cloneNode(true));
 	    }
-	    messageElementsAdded = true; 
 
-		document.getElementById("firstfocus").focus();
+	    messageElementsAdded = true; 
 
 	    onMessageComposed();
 	}
@@ -709,48 +723,37 @@
 
 		    var url = baseEndpoint + '/wrapper/v2/pv-data?hasCsp=true&env=prod&ch='+cb+'&scriptVersion='+scriptVersion+'&scriptType='+scriptType;
 
-		    var req = new XMLHttpRequest();
-		    req.open('POST', url, false);  
-		 
-		    req.setRequestHeader('accept', '*/*');
-		    req.setRequestHeader('accept-language', 'de,en;q=0.9');
-		    req.setRequestHeader('content-type', 'application/json');
-		    
-		    var jsonData = JSON.stringify(data);
+			var req = createPostRequest(url);
 
 		    req.onreadystatechange = function() {
 		        if (req.readyState === 4 && req.status === 200) {
 		            var res = JSON.parse(req.responseText);
-
 		        }else{
 		            console.error('error:', req.responseText);
 		        }
 		    };
 
-		    req.send(jsonData);
+		    req.send(JSON.stringify(data));
 	 	}  
 	}
 
-
-
 	function getMetaData(){
-			var baseUrl = baseEndpoint + '/wrapper/v2/meta-data';
-		    var params = {
-		      hasCsp: 'true',
-		      accountId: accountId,
-		      //hardcode PROD ENV
-		      env: 'prod',
-		      //hardcode GDPR Campaign
-		      metadata: '{"gdpr":{}}',
-		      propertyId: propertyId,
-		      scriptVersion: scriptVersion,
-		      scriptType: scriptType
-		    };
+		var baseUrl = baseEndpoint + '/wrapper/v2/meta-data';
+	    var params = {
+	      hasCsp: 'true',
+	      accountId: accountId,
+	      //hardcode PROD ENV
+	      env: 'prod',
+	      //hardcode GDPR Campaign
+	      metadata: '{"gdpr":{}}',
+	      propertyId: propertyId,
+	      scriptVersion: scriptVersion,
+	      scriptType: scriptType
+	    };
 
-		    var res = JSON.parse(httpGet(buildUrl(baseUrl, params)));
-		    metaData = res;
-		    setCookie("metaData_"+propertyId, JSON.stringify(metaData),365);
-
+	    var res = JSON.parse(httpGet(buildUrl(baseUrl, params)));
+	    metaData = res;
+	    setCookie("metaData_"+propertyId, JSON.stringify(metaData),365);
 	}
 
 	extendSpObject();
@@ -760,13 +763,8 @@
 		getConsentStatus();
 		getMessages();
 	}
-
-	console.log('QR');
-
-	updateQrUrl(_sp_.config.qrUrl + _sp_.config.pmUrl +"?authId="+authId+"&propertyId="+propertyId+"&propertyHref="+propertyHref+"&accountId="+accountId);
 	        
     if(!messageElementsAdded){
-    	console.log("BM")
    		buildMessage();
     }
 
